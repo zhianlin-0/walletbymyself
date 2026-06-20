@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zhixian's Ledger | 資產管理羅盤</title>
+    
+    <link rel="apple-touch-icon" href="https://img.icons8.com/fluent/180/000000/sea-waves.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-ocean: #1a5f7a;
+            --sunny-amber: #f7b05b;
+            --sand-beach: #f7f9fa;
+            --foam-white: #ffffff;
+            --sea-shadow: #226f8d1c;
+            --text-dark: #2c3e50;
+            --text-muted: #7f8c8d;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans TC', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--sand-beach); color: var(--text-dark); padding-bottom: 80px; }
+        header { background: linear-gradient(135deg, var(--primary-ocean), #2d8bb1); color: var(--foam-white); padding: 30px 20px; text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; box-shadow: 0 4px 15px var(--sea-shadow); }
+        header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 5px; }
+        header p { font-size: 0.85rem; font-weight: 300; opacity: 0.8; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        
+        /* 頂層大資產卡片 */
+        .balance-card { background: var(--foam-white); border-radius: 16px; padding: 20px; margin-bottom: 25px; box-shadow: 0 8px 24px var(--sea-shadow); border: 1px solid rgba(26, 95, 122, 0.05); }
+        .balance-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; margin-bottom: 15px; }
+        .balance-card h3 { font-size: 0.95rem; color: var(--primary-ocean); font-weight: 700; }
+        
+        /* 兩欄網格佈局 */
+        .financial-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        /* 大類別區塊外殼 */
+        .eco-block {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+        .eco-block.grid-item { margin-bottom: 0; }
+
+        /* 大類別標題：支援流暢雙向折疊 */
+        .eco-block-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--sunny-amber);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            margin-bottom: 8px;
+        }
+        .sector-arrow {
+            font-size: 0.7rem;
+            color: var(--primary-ocean);
+            transition: transform 0.25s ease;
+        }
+
+        /* 大類別內容的伸縮容器 */
+        .sector-content {
+            max-height: 2500px;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out;
+        }
+
+        /* 同銀行二級聚合外殼橫條 */
+        .bank-group-wrapper {
+            background: var(--foam-white);
+            border-radius: 8px;
+            margin-bottom: 6px;
+            border: 1px solid #edf2f7;
+        }
+        .bank-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .bank-title {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 140px;
+        }
+        .bank-sum {
+            font-weight: 700;
+            color: var(--primary-ocean);
+        }
+        .bank-arrow {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            transition: transform 0.2s ease;
+            margin-left: 4px;
+            display: inline-block;
+        }
+        .bank-child-list {
+            list-style: none;
+            padding: 0 8px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.25s ease-out;
+            background-color: #fafbfc;
+        }
+        
+        /* 展開明細後的單條樣式（100% 呈現真實全名） */
+        .balance-item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 8px 4px; 
+            font-size: 0.78rem; 
+            border-bottom: 1px dashed #edf2f7;
+        }
+        .balance-item:last-child { border-bottom: none; }
+        .account-name { color: #718093; line-height: 1.3; word-break: break-all; padding-right: 6px; }
+        .account-val { font-weight: 600; color: #1a5f7a; white-space: nowrap; }
+
+        /* 表單與其他設定 */
+        .form-card { background: var(--foam-white); border-radius: 16px; padding: 24px; box-shadow: 0 8px 24px var(--sea-shadow); display: none; }
+        .form-card.active { display: block; animation: fadeIn 0.4s ease; }
+        .form-title { font-size: 1.2rem; color: var(--primary-ocean); margin-bottom: 20px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 500; }
+        .form-control { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 1rem; color: var(--text-dark); background-color: #fafbfc; transition: all 0.3s ease; outline: none; }
+        .form-control:focus { border-color: var(--primary-ocean); background-color: var(--foam-white); box-shadow: 0 0 0 3px rgba(26, 95, 122, 0.1); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .btn-submit { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--sunny-amber), #f39c12); color: white; border: none; border-radius: 12px; font-size: 1.05rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3); transition: transform 0.2s, opacity 0.2s; margin-top: 10px; }
+        .btn-submit:active { transform: scale(0.98); opacity: 0.9; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background-color: rgba(255, 255, 255, 0.92); backdrop-filter: blur(10px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(0, 0, 0, 0.05); box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.02); z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); text-decoration: none; font-size: 0.75rem; cursor: pointer; transition: color 0.3s; background: none; border: none; flex: 1; }
+        .nav-item.active { color: var(--primary-ocean); font-weight: 700; }
+        .nav-icon { font-size: 1.3rem; margin-bottom: 2px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ZHIXIAN'S LEDGER</h1>
+        <p>理財如馭浪，心之所向，即是遠方</p>
+    </header>
+
+    <div class="container">
+        
+        <div class="balance-card">
+            <div class="balance-header" onclick="toggleMainBalance()">
+                <h3>🌊 智慧分流資產面板</h3>
+                <span id="foldArrow" style="transition: transform 0.3s ease; color: var(--primary-ocean); font-weight: bold;">▼</span>
+            </div>
+            <div id="balanceContent" style="max-height: 4000px; overflow: hidden; transition: max-height 0.4s ease-in-out;">
+                
+                <div class="eco-block">
+                    <div class="eco-block-title" onclick="toggleSector('cash')">
+                        <span>💵 現金現鈔</span>
+                        <span class="sector-arrow" id="arrow-cash">▼</span>
+                    </div>
+                    <div class="sector-content" id="sector-cash"></div>
+                </div>
+
+                <div class="eco-block">
+                    <div class="eco-block-title" onclick="toggleSector('traditional')">
+                        <span>🏛️ 實體銀行</span>
+                        <span class="sector-arrow" id="arrow-traditional">▼</span>
+                    </div>
+                    <div class="sector-content" id="sector-traditional"></div>
+                </div>
+
+                <div class="eco-block">
+                    <div class="eco-block-title" onclick="toggleSector('digital')">
+                        <span>📱 數位銀行</span>
+                        <span class="sector-arrow" id="arrow-digital">▼</span>
+                    </div>
+                    <div class="sector-content" id="sector-digital"></div>
+                </div>
+
+                <div class="eco-block">
+                    <div class="eco-block-title" onclick="toggleSector('pure')">
+                        <span>🌐 純網銀</span>
+                        <span class="sector-arrow" id="arrow-pure">▼</span>
+                    </div>
+                    <div class="sector-content" id="sector-pure"></div>
+                </div>
+
+                <div class="financial-grid">
+                    <div class="eco-block grid-item">
+                        <div class="eco-block-title" onclick="toggleSector('epay')">
+                            <span>💳 電子支付</span>
+                            <span class="sector-arrow" id="arrow-epay">▼</span>
+                        </div>
+                        <div class="sector-content" id="sector-epay"></div>
+                    </div>
+                    <div class="eco-block grid-item">
+                        <div class="eco-block-title" onclick="toggleSector('credit')">
+                            <span>🌹 信用卡</span>
+                            <span class="sector-arrow" id="arrow-credit">▼</span>
+                        </div>
+                        <div class="sector-content" id="sector-credit"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="panel-transaction" class="form-card active">
+            <div class="form-title"><span>⛺</span> 日常生活記帳</div>
+            <form id="txForm">
+                <div class="form-group">
+                    <label>日期</label>
+                    <input type="date" id="txDate" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>交易類型</label>
+                    <select id="txType" class="form-control">
+                        <option value="支出">支出 (Outflow)</option>
+                        <option value="收入">收入 (Inflow)</option>
+                        <option value="轉帳">轉帳 (Transfer)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>扣款帳戶 (出)</label>
+                    <select id="txAccountOut" class="form-control account-select"></select>
+                </div>
+                <div class="form-group">
+                    <label>存入帳戶 (入，僅轉帳/收入需要)</label>
+                    <select id="txAccountIn" class="form-control account-select">
+                        <option value="">-- 無 --</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>金額</label>
+                        <input type="number" id="txAmount" class="form-control" placeholder="0" required min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>幣別</label>
+                        <select id="txCurrency" class="form-control">
+                            <option value="TWD">TWD (台幣)</option>
+                            <option value="USD">USD (美金)</option>
+                            <option value="JPY">JPY (日幣)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>主分類</label>
+                        <input type="text" id="txMainCat" class="form-control" placeholder="如: 餐飲、戶外">
+                    </div>
+                    <div class="form-group">
+                        <label>子分類</label>
+                        <input type="text" id="txSubCat" class="form-control" placeholder="如: 浪板租借">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>備註</label>
+                    <input type="text" id="txNote" class="form-control" placeholder="寫下這趟旅程的碎念吧...">
+                </div>
+                <button type="submit" class="btn-submit">將紀錄拋向浪潮</button>
+            </form>
+        </div>
+
+        <div id="panel-stock" class="form-card">
+            <div class="form-title"><span>⛵</span> 股票操盤紀錄</div>
+            <form id="stockForm">
+                <div class="form-group">
+                    <label>交易日期</label>
+                    <input type="date" id="stockDate" class="form-control" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>股票代號</label>
+                        <input type="text" id="stockCode" class="form-control" placeholder="如: 2330" required>
+                    </div>
+                    <div class="form-group">
+                        <label>股票名稱</label>
+                        <input type="text" id="stockName" class="form-control" placeholder="如: 台積電" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>交易類型</label>
+                    <select id="stockType" class="form-control">
+                        <option value="現股買入">現股買入</option>
+                        <option value="現股賣出">現股賣出</option>
+                        <option value="當沖買入">當沖買入</option>
+                        <option value="當沖賣出">當沖賣出</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>股數</label>
+                        <input type="number" id="stockShares" class="form-control" placeholder="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>單價</label>
+                        <input type="number" id="stockPrice" class="form-control" step="0.01" placeholder="0.00" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>券商折讓 (如6折輸入 0.6)</label>
+                    <input type="number" id="stockDiscount" class="form-control" step="0.01" value="0.6">
+                </div>
+                <button type="submit" class="btn-submit">確認此筆交易</button>
+            </form>
+        </div>
+
+        <div id="panel-loan" class="form-card">
+            <div class="form-title"><span>🤝</span> 借貸與代墊款</div>
+            <form id="loanForm">
+                <div class="form-group">
+                    <label>日期</label>
+                    <input type="date" id="loanDate" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>類型</label>
+                    <select id="loanType" class="form-control">
+                        <option value="借出款項">借出 (別人欠我)</option>
+                        <option value="借入款項">借入 (我欠別人)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>對象（旅伴人名）</label>
+                    <input type="text" id="loanTarget" class="form-control" placeholder="如: 夥伴名稱" required>
+                </div>
+                <div class="form-group">
+                    <label>金額</label>
+                    <input type="number" id="loanAmount" class="form-control" placeholder="0" required>
+                </div>
+                <div class="form-group">
+                    <label>撥款 / 收款帳戶</label>
+                    <select id="loanAccount" class="form-control account-select"></select>
+                </div>
+                <button type="submit" class="btn-submit">紀錄這段人情帳</button>
+            </form>
+        </div>
+
+    </div>
+
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchPanel('transaction', this)">
+            <div class="nav-icon">⛺</div>
+            <div>日常記帳</div>
+        </button>
+        <button class="nav-item" onclick="switchPanel('stock', this)">
+            <div class="nav-icon">⛵</div>
+            <div>股票交易</div>
+        </button>
+        <button class="nav-item" onclick="switchPanel('loan', this)">
+            <div class="nav-icon">🤝</div>
+            <div>借貸管理</div>
+        </button>
+    </nav>
+
+    <script>
+        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbygbG4FxYl4dQloJdMXRw-mxlWDtoAfhNc4h92jM3UlS9azOr88Ot3jTtuAEhKlCGOwnA/exec";
+
+        function toggleMainBalance() {
+            const content = document.getElementById("balanceContent");
+            const arrow = document.getElementById("foldArrow");
+            if (content.style.maxHeight === "0px" || content.style.maxHeight === "") {
+                content.style.maxHeight = "4000px";
+                arrow.style.transform = "rotate(0deg)";
+            } else {
+                content.style.maxHeight = "0px";
+                arrow.style.transform = "rotate(-90deg)";
+            }
+        }
+
+        // 大分類外殼自由雙向收合
+        function toggleSector(sectorId) {
+            const content = document.getElementById("sector-" + sectorId);
+            const arrow = document.getElementById("arrow-" + sectorId);
+            
+            if (content.style.maxHeight === "0px" || !content.style.maxHeight) {
+                content.style.maxHeight = "2500px"; 
+                arrow.style.transform = "rotate(0deg)"; 
+            } else {
+                content.style.maxHeight = "0px"; 
+                arrow.style.transform = "rotate(-90deg)"; 
+            }
+        }
+
+        // 二級內部群組折疊邏輯 (點擊個別主銀行橫條展開/收合)
+        function toggleBankGroup(bankId) {
+            const list = document.getElementById("bank-list-" + bankId);
+            const arrow = document.getElementById("bank-arrow-" + bankId);
+            
+            if (list.style.maxHeight === "0px" || !list.style.maxHeight) {
+                list.style.maxHeight = "600px"; 
+                arrow.style.transform = "rotate(90deg)"; 
+            } else {
+                list.style.maxHeight = "0px"; 
+                arrow.style.transform = "rotate(0deg)"; 
+            }
+        }
+
+        function switchPanel(panelId, element) {
+            document.querySelectorAll('.form-card').forEach(card => card.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.getElementById('panel-' + panelId).classList.add('active');
+            element.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('txDate').value = today;
+        document.getElementById('stockDate').value = today;
+        document.getElementById('loanDate').value = today;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchAccounts();
+        });
+
+        function fetchAccounts() {
+            const secTraditional = document.getElementById("sector-traditional");
+            const secDigital = document.getElementById("sector-digital");
+            const secPure = document.getElementById("sector-pure");
+            const secEpay = document.getElementById("sector-epay");
+            const secCredit = document.getElementById("sector-credit");
+            const secCash = document.getElementById("sector-cash");
+            const selectElements = document.querySelectorAll(".account-select");
+
+            fetch(GAS_API_URL)
+                .then(response => response.json())
+                .then(res => {
+                    if (res.status === "success") {
+                        const accounts = res.data;
+                        
+                        secTraditional.innerHTML = "";
+                        secDigital.innerHTML = "";
+                        secPure.innerHTML = "";
+                        secEpay.innerHTML = "";
+                        secCredit.innerHTML = "";
+                        secCash.innerHTML = "";
+                        
+                        selectElements.forEach(select => {
+                            select.innerHTML = select.id === "txAccountIn" ? '<option value="">-- 無 (非轉帳) --</option>' : '';
+                        });
+
+                        const groupedData = {};
+
+                        accounts.forEach(acc => {
+                            // 100% 注入三大表單的所有選單中
+                            selectElements.forEach(select => {
+                                const option = document.createElement("option");
+                                option.value = acc.name;
+                                option.textContent = `${acc.name} (${acc.currency})`;
+                                select.appendChild(option);
+                            });
+
+                            const val = typeof acc.balance === "number" ? acc.balance.toLocaleString('zh-TW') : (acc.balance || 0);
+                            const sheetType = acc.type ? acc.type.trim() : "實體銀行";
+                            const bankNameValue = acc.bank ? acc.bank.trim() : "其它";
+
+                            // 1. 現金現鈔流 (聽從類型分流置頂)
+                            if (sheetType === "現金現鈔") {
+                                secCash.innerHTML += `
+                                    <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 12px; font-size:0.88rem; background:white; border-radius:8px; border:1px solid #edf2f7; margin-bottom:4px;">
+                                        <span style="font-weight:500; color:var(--text-dark);">${acc.name}</span>
+                                        <span style="font-weight:700; color:var(--primary-ocean);">${val} <small style="font-size:0.7rem; color:#7f8c8d;">(${acc.currency})</small></span>
+                                    </div>`;
+                                return;
+                            }
+
+                            // 2. 核心聚合：改用你在 Excel 新增的 C 欄「銀行」值作為聚合標籤外殼
+                            const aggKey = sheetType + "_" + bankNameValue;
+
+                            if (!groupedData[aggKey]) {
+                                groupedData[aggKey] = {
+                                    bankTitle: bankNameValue, 
+                                    sector: sheetType,
+                                    totalBalance: 0,
+                                    subAccounts: []
+                                };
+                            }
+
+                            groupedData[aggKey].subAccounts.push({ fullName: acc.name, balance: val, currency: acc.currency });
+                            groupedData[aggKey].totalBalance += (Number(acc.balance) || 0);
+                        });
+
+                        // 3. 動態渲染二級濃縮結構，並流暢綁定折疊與真名
+                        let bankIndex = 0;
+                        for (const key in groupedData) {
+                            const group = groupedData[key];
+                            const wrapper = document.createElement("div");
+                            wrapper.className = "bank-group-wrapper";
+                            
+                            const formattedTotal = group.totalBalance.toLocaleString('zh-TW', { maximumFractionDigits: 0 });
+                            
+                            wrapper.innerHTML = `
+                                <div class="bank-header" onclick="toggleBankGroup(${bankIndex})">
+                                    <span class="bank-title" title="${group.bankTitle}">${group.bankTitle}</span>
+                                    <div>
+                                        <span class="bank-sum">${formattedTotal}</span>
+                                        <span class="bank-arrow" id="bank-arrow-${bankIndex}">▶</span>
+                                    </div>
+                                </div>
+                            `;
+
+                            const childUl = document.createElement("ul");
+                            childUl.className = "bank-child-list";
+                            childUl.id = "bank-list-" + bankIndex;
+                            childUl.style.maxHeight = "0px"; 
+
+                            group.subAccounts.forEach(sub => {
+                                childUl.innerHTML += `
+                                    <li class="balance-item">
+                                        <span class="account-name">${sub.fullName}</span>
+                                        <span class="account-val">${sub.balance} <small class="currency-tag">(${sub.currency})</small></span>
+                                    </li>`;
+                            });
+
+                            wrapper.appendChild(childUl);
+
+                            // 精準投入你在 Excel 新設定的這 5 大分類格子
+                            if (group.sector === "實體銀行") secTraditional.appendChild(wrapper);
+                            else if (group.sector === "數位銀行") secDigital.appendChild(wrapper);
+                            else if (group.sector === "純網銀") secPure.appendChild(wrapper);
+                            else if (group.sector === "電子支付") secEpay.appendChild(wrapper);
+                            else if (group.sector === "信用卡") secCredit.appendChild(wrapper);
+
+                            bankIndex++;
+                        }
+
+                        // 空白防守
+                        if(!secTraditional.innerHTML) secTraditional.innerHTML = '<p style="color:#a0aec0; font-size:0.75rem; padding:4px;">無紀錄</p>';
+                        if(!secDigital.innerHTML) secDigital.innerHTML = '<p style="color:#a0aec0; font-size:0.75rem; padding:4px;">無紀錄</p>';
+                        if(!secPure.innerHTML) secPure.innerHTML = '<p style="color:#a0aec0; font-size:0.75rem; padding:4px;">無紀錄</p>';
+                        if(!secEpay.innerHTML) secEpay.innerHTML = '<p style="color:#a0aec0; font-size:0.75rem; padding:4px;">無紀錄</p>';
+                        if(!secCredit.innerHTML) secCredit.innerHTML = '<p style="color:#a0aec0; font-size:0.75rem; padding:4px;">無紀錄</p>';
+                        if(!secCash.innerHTML) secCash.innerHTML = '<p style="color:#a0aec0; font-size:0.75rem; padding:4px;">無紀錄</p>';
+                    }
+                })
+                .catch(err => console.error("Error:", err));
+        }
+
+        function handleFormSubmit(formId, actionType, getFormDataFunc) {
+            document.getElementById(formId).addEventListener("submit", function(e) {
+                e.preventDefault();
+                const submitBtn = this.querySelector(".btn-submit");
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = "正在將資料送往彼岸... ⛵";
+                submitBtn.disabled = true;
+
+                const payload = { action: actionType, data: getFormDataFunc() };
+
+                fetch(GAS_API_URL, { method: "POST", body: JSON.stringify(payload) })
+                .then(response => response.json())
+                .then(res => {
+                    if (res.status === "success") {
+                        alert("✨ 紀錄成功！資料已穩穩寫入您的雲端試算表。");
+                        this.reset();
+                        const todayStr = new Date().toISOString().split('T')[0];
+                        const dateInput = this.querySelector("input[type='date']");
+                        if(dateInput) dateInput.value = todayStr;
+                        fetchAccounts();
+                    } else { alert("❌ 寫入失敗: " + res.message); }
+                })
+                .catch(err => { alert("❌ 網路發生錯誤。"); console.error(err); })
+                .finally(() => { submitBtn.textContent = originalText; submitBtn.disabled = false; });
+            });
+        }
+
+        handleFormSubmit("txForm", "addTransaction", () => {
+            return {
+                date: document.getElementById("txDate").value,
+                type: document.getElementById("txType").value,
+                accountOut: document.getElementById("txAccountOut").value,
+                accountIn: document.getElementById("txAccountIn").value,
+                amount: Number(document.getElementById("txAmount").value),
+                currency: document.getElementById("txCurrency").value,
+                mainCategory: document.getElementById("txMainCat").value,
+                subCategory: document.getElementById("txSubCat").value,
+                project: "",
+                note: document.getElementById("txNote").value
+            };
+        });
+
+        handleFormSubmit("stockForm", "addStock", () => {
+            return {
+                date: document.getElementById("stockDate").value,
+                stockCode: document.getElementById("stockCode").value,
+                stockName: document.getElementById("stockName").value,
+                type: document.getElementById("stockType").value,
+                shares: Number(document.getElementById("stockShares").value),
+                price: Number(document.getElementById("stockPrice").value),
+                discount: Number(document.getElementById("stockDiscount").value)
+            };
+        });
+
+        handleFormSubmit("loanForm", "addLoan", () => {
+            return {
+                date: document.getElementById("loanDate").value,
+                type: document.getElementById("loanType").value,
+                target: document.getElementById("loanTarget").value,
+                amount: Number(document.getElementById("loanAmount").value),
+                account: document.getElementById("loanAccount").value
+            };
+        });
+    </script>
+</body>
+</html>
