@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zhixian's Accounting💰</title>
+    <title>Zhixian's Accounting</title>
     
     <link class="apple-touch-icon" href="https://img.icons8.com/fluent/180/000000/sea-waves.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -21,7 +21,7 @@
             --text-muted: #7f8c8d;
         }
         
-        /* 💡 核心：精準指定蘋果內建的翩翩體官方名稱 "HanziPen TC"，讓 iPhone 點開直接完美顯現翩翩手寫風 */
+        /* 核心：精準指定蘋果內建的翩翩體官方名稱 "HanziPen TC"，讓 iPhone 點開直接完美顯現翩翩手寫風 */
         * { 
             box-sizing: border-box; 
             margin: 0; 
@@ -32,16 +32,48 @@
         
         body { background-color: var(--sand-beach); color: var(--text-dark); padding-bottom: 80px; overflow-x: hidden; }
         
-        header { background: linear-gradient(135deg, var(--primary-ocean), #2d8bb1); color: var(--foam-white); padding: 30px 20px; text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; box-shadow: 0 4px 15px var(--sea-shadow); }
+        header { background: linear-gradient(135deg, var(--primary-ocean), #2d8bb1); color: var(--foam-white); padding: 30px 20px; text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; box-shadow: 0 4px 15px var(--sea-shadow); position: relative; }
         header h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 5px; }
         header p { font-size: 0.9rem; font-weight: 300; opacity: 0.8; letter-spacing: 1px; }
         
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
         
-        /* 頂層大資產總額卡片 */
-        .balance-card { background: var(--foam-white); border-radius: 16px; padding: 20px; margin-bottom: 25px; box-shadow: 0 6px 20px var(--sea-shadow); border: 1px solid rgba(26, 95, 122, 0.05); }
-        .balance-card h3 { font-size: 0.95rem; color: var(--text-muted); font-weight: 500; margin-bottom: 6px; letter-spacing: 1px; }
-        .main-total-display { font-size: 1.9rem; font-weight: 700; color: var(--primary-ocean); }
+        /* 頂層大資產總額卡片 - 改為彈性盒模型以利置中 */
+        .balance-card { 
+            background: var(--foam-white); 
+            border-radius: 16px; 
+            padding: 20px; 
+            margin-bottom: 25px; 
+            box-shadow: 0 6px 20px var(--sea-shadow); 
+            border: 1px solid rgba(26, 95, 122, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 讓裡面的元素通通水平置中 */
+            text-align: center;
+        }
+        .balance-card h3 { font-size: 0.95rem; color: var(--text-muted); font-weight: 500; margin-bottom: 10px; letter-spacing: 1px; }
+        .main-total-display { font-size: 1.9rem; font-weight: 700; color: var(--primary-ocean); margin-top: 5px; }
+
+        /* 💡 新增/修改：置中隱私開關按鈕樣式 */
+        .privacy-toggle-btn {
+            background: #f1f5f9;
+            color: var(--primary-ocean);
+            border: 1px solid #e2e8f0;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 8px; /* 與下方金額拉開距離 */
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .privacy-toggle-btn:active {
+            background: #e2e8f0;
+            transform: scale(0.97);
+        }
 
         /* 頁面切換核心動畫與容器 */
         .app-view { display: none; }
@@ -161,8 +193,8 @@
 <body>
 
     <header>
-        <h1>Zhixian's Accounting💰</h1>
-        <p>認真賺錢，謹慎花錢，多多存錢，快樂玩耍！</p>
+        <h1>Zhian's 🫧𓇼𓏲*ੈ✩‧₊˚🎐</h1>
+        <p>認真賺錢，謹慎花錢，多多存錢，快樂玩耍！☼ಐ </p>
     </header>
 
     <div class="container">
@@ -170,7 +202,10 @@
         <div id="view-main-dashboard" class="app-view active">
             <div class="balance-card">
                 <h3>🌊 預估總資產 (台幣換算)</h3>
-                <div class="main-total-display">NT$ <span id="grand-total-display">0</span></div>
+                
+                <button class="privacy-toggle-btn" id="privacyBtn" onclick="togglePrivacy()">🔒 億萬小公主</button>
+                
+                <div class="main-total-display">NT$ <span id="grand-total-display">••••••</span></div>
             </div>
 
             <div class="main-sector-grid">
@@ -180,7 +215,7 @@
                         <span class="cube-title">現金現鈔</span>
                     </div>
                     <div class="cube-footer">
-                        <span class="cube-amount" id="cube-total-cash">0</span>
+                        <span class="cube-amount" id="cube-total-cash">••••••</span>
                         <span class="cube-arrow">➔</span>
                     </div>
                 </div>
@@ -191,7 +226,7 @@
                         <span class="cube-title">實體銀行</span>
                     </div>
                     <div class="cube-footer">
-                        <span class="cube-amount" id="cube-total-traditional">0</span>
+                        <span class="cube-amount" id="cube-total-traditional">••••••</span>
                         <span class="cube-arrow">➔</span>
                     </div>
                 </div>
@@ -202,7 +237,7 @@
                         <span class="cube-title">數位銀行</span>
                     </div>
                     <div class="cube-footer">
-                        <span class="cube-amount" id="cube-total-digital">0</span>
+                        <span class="cube-amount" id="cube-total-digital">••••••</span>
                         <span class="cube-arrow">➔</span>
                     </div>
                 </div>
@@ -213,7 +248,7 @@
                         <span class="cube-title">純網銀</span>
                     </div>
                     <div class="cube-footer">
-                        <span class="cube-amount" id="cube-total-pure">0</span>
+                        <span class="cube-amount" id="cube-total-pure">••••••</span>
                         <span class="cube-arrow">➔</span>
                     </div>
                 </div>
@@ -224,7 +259,7 @@
                         <span class="cube-title">電子支付</span>
                     </div>
                     <div class="cube-footer">
-                        <span class="cube-amount" id="cube-total-epay">0</span>
+                        <span class="cube-amount" id="cube-total-epay">••••••</span>
                         <span class="cube-arrow">➔</span>
                     </div>
                 </div>
@@ -235,7 +270,7 @@
                         <span class="cube-title">信用卡</span>
                     </div>
                     <div class="cube-footer">
-                        <span class="cube-amount" id="cube-total-credit">0</span>
+                        <span class="cube-amount" id="cube-total-credit">••••••</span>
                         <span class="cube-arrow">➔</span>
                     </div>
                 </div>
@@ -246,7 +281,7 @@
                         <span class="cube-title">儲值卡</span>
                     </div>
                     <div class="cube-footer">
-                        <span class="cube-amount" id="cube-total-prepaid">0</span>
+                        <span class="cube-amount" id="cube-total-prepaid">••••••</span>
                         <span class="cube-arrow">➔</span>
                     </div>
                 </div>
@@ -257,7 +292,7 @@
                         <span class="cube-title">外幣現鈔</span>
                     </div>
                     <div class="cube-footer">
-                        <span class="cube-amount" id="cube-total-foreignCash">0</span>
+                        <span class="cube-amount" id="cube-total-foreignCash">••••••</span>
                         <span class="cube-arrow">➔</span>
                     </div>
                 </div>
@@ -325,12 +360,12 @@
                     <label>備註</label>
                     <input type="text" id="txNote" class="form-control" placeholder="寫下這趟旅程的碎念吧...">
                 </div>
-                <button type="submit" class="btn-submit">將紀錄拋向浪潮</button>
+                <button type="submit" class="btn-submit">每筆花費都很重要！</button>
             </form>
         </div>
 
         <div id="panel-stock" class="form-card">
-            <div class="form-title"><span>⛵</span> 股票操盤紀錄</div>
+            <div class="form-title"><span>⛵</span> 投資理財賺錢錢</div>
             <form id="stockForm">
                 <div class="form-group">
                     <label>交易日期</label>
@@ -423,9 +458,58 @@
     <script>
         const GAS_API_URL = "https://script.google.com/macros/s/AKfycbygbG4FxYl4dQloJdMXRw-mxlWDtoAfhNc4h92jM3UlS9azOr88Ot3jTtuAEhKlCGOwnA/exec";
         
+        // 密碼設定：預設是 1234
+        const PRIVACY_PIN = "3693"; 
+        let isUnlocked = false; // 全域變數：目前是否已解鎖
+
+        let globalRawData = { grandTotal: 0, sectorTotals: {} };
         let globalCachedSectors = {
             cash: [], traditional: [], digital: [], pure: [], epay: [], credit: [], prepaid: [], foreignCash: []
         };
+
+        // 隱私切換控制核心函式
+        function togglePrivacy() {
+            if (!isUnlocked) {
+                const userInput = prompt("🔒 請輸入驗證碼以解鎖金額顯示：");
+                if (userInput === PRIVACY_PIN) {
+                    isUnlocked = true;
+                    document.getElementById("privacyBtn").textContent = "👁️ 多賺點錢好咪";
+                    renderAllAmounts(); 
+                } else if (userInput !== null) {
+                    alert("❌ 驗證碼錯誤，無法解鎖資產資訊。");
+                }
+            } else {
+                isUnlocked = false;
+                document.getElementById("privacyBtn").textContent = "🔒 億萬小公主";
+                renderAllAmounts(); 
+                
+                if(document.getElementById('view-sector-detail').classList.contains('active')) {
+                    const currentTitle = document.getElementById('detail-page-title').textContent;
+                    let currentKey = "cash";
+                    if(currentTitle.includes("實體")) currentKey = "traditional";
+                    else if(currentTitle.includes("數位")) currentKey = "digital";
+                    else if(currentTitle.includes("純網")) currentKey = "pure";
+                    else if(currentTitle.includes("電子")) currentKey = "epay";
+                    else if(currentTitle.includes("信用")) currentKey = "credit";
+                    else if(currentTitle.includes("儲值")) currentKey = "prepaid";
+                    else if(currentTitle.includes("外幣")) currentKey = "foreignCash";
+                    navigateToDetail(currentKey, currentTitle);
+                }
+            }
+        }
+
+        // 根據目前狀態決定渲染真實金額還是遮罩
+        function renderAllAmounts() {
+            document.getElementById("grand-total-display").textContent = isUnlocked ? globalRawData.grandTotal.toLocaleString('zh-TW') : "••••••";
+            document.getElementById("cube-total-cash").textContent = isUnlocked ? (globalRawData.sectorTotals["現金現鈔"] || 0).toLocaleString('zh-TW') : "••••••";
+            document.getElementById("cube-total-traditional").textContent = isUnlocked ? (globalRawData.sectorTotals["實體銀行"] || 0).toLocaleString('zh-TW') : "••••••";
+            document.getElementById("cube-total-digital").textContent = isUnlocked ? (globalRawData.sectorTotals["數位銀行"] || 0).toLocaleString('zh-TW') : "••••••";
+            document.getElementById("cube-total-pure").textContent = isUnlocked ? (globalRawData.sectorTotals["純網銀"] || 0).toLocaleString('zh-TW') : "••••••";
+            document.getElementById("cube-total-epay").textContent = isUnlocked ? (globalRawData.sectorTotals["電子支付"] || 0).toLocaleString('zh-TW') : "••••••";
+            document.getElementById("cube-total-credit").textContent = isUnlocked ? (globalRawData.sectorTotals["信用卡"] || 0).toLocaleString('zh-TW') : "••••••";
+            document.getElementById("cube-total-prepaid").textContent = isUnlocked ? (globalRawData.sectorTotals["儲值卡"] || 0).toLocaleString('zh-TW') : "••••••";
+            document.getElementById("cube-total-foreignCash").textContent = isUnlocked ? (globalRawData.sectorTotals["外幣現鈔"] || 0).toLocaleString('zh-TW') : "••••••";
+        }
 
         function switchNav(target, element) {
             document.querySelectorAll('.form-card').forEach(card => card.classList.remove('active'));
@@ -455,11 +539,12 @@
                 root.innerHTML = '<p style="color:#a0aec0; font-size:0.9rem; padding:20px; text-align:center; grid-column: span 2;">此大項目前無任何帳戶資料</p>';
             } else {
                 targetedAccounts.forEach(acc => {
+                    const displayVal = isUnlocked ? acc.formattedBalance : "••••••";
                     root.innerHTML += `
                         <div class="detail-cube-item">
                             <span class="detail-cube-title">${acc.name}</span>
                             <span class="detail-cube-amount">
-                                ${acc.formattedBalance}
+                                ${displayVal}
                                 <small class="detail-cube-currency">(${acc.currency})</small>
                             </span>
                         </div>
@@ -533,15 +618,10 @@
                             else if (sheetType === "外幣現鈔") globalCachedSectors.foreignCash.push(accPack);
                         });
 
-                        document.getElementById("grand-total-display").textContent = grandTotalTWD.toLocaleString('zh-TW');
-                        document.getElementById("cube-total-cash").textContent = sectorTotals["現金現鈔"].toLocaleString('zh-TW');
-                        document.getElementById("cube-total-traditional").textContent = sectorTotals["實體銀行"].toLocaleString('zh-TW');
-                        document.getElementById("cube-total-digital").textContent = sectorTotals["數位銀行"].toLocaleString('zh-TW');
-                        document.getElementById("cube-total-pure").textContent = sectorTotals["純網銀"].toLocaleString('zh-TW');
-                        document.getElementById("cube-total-epay").textContent = sectorTotals["電子支付"].toLocaleString('zh-TW');
-                        document.getElementById("cube-total-credit").textContent = sectorTotals["信用卡"].toLocaleString('zh-TW');
-                        document.getElementById("cube-total-prepaid").textContent = sectorTotals["儲值卡"].toLocaleString('zh-TW');
-                        document.getElementById("cube-total-foreignCash").textContent = sectorTotals["外幣現鈔"].toLocaleString('zh-TW');
+                        globalRawData.grandTotal = grandTotalTWD;
+                        globalRawData.sectorTotals = sectorTotals;
+
+                        renderAllAmounts();
                     }
                 })
                 .catch(err => console.error("Error:", err));
