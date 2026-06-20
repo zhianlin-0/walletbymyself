@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zhixian's Ledger | 資產管理羅盤</title>
+    <title>Zhixian's Accounting💰</title>
     
-    <link rel="apple-touch-icon" href="https://img.icons8.com/fluent/180/000000/sea-waves.png">
+    <link class="apple-touch-icon" href="https://img.icons8.com/fluent/180/000000/sea-waves.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Liu+Jian+Mao+Cao&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-ocean: #1a5f7a;
@@ -20,204 +20,259 @@
             --text-dark: #2c3e50;
             --text-muted: #7f8c8d;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans TC', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--sand-beach); color: var(--text-dark); padding-bottom: 80px; }
+        
+        /* 💡 核心：精準指定蘋果內建的翩翩體官方名稱 "HanziPen TC"，讓 iPhone 點開直接完美顯現翩翩手寫風 */
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: "HanziPen TC", "翩翩體-繁", "Liu Jian Mao Cao", "Caveat", "Chalkboard SE", 'Noto Sans TC', sans-serif;
+            -webkit-tap-highlight-color: transparent; 
+        }
+        
+        body { background-color: var(--sand-beach); color: var(--text-dark); padding-bottom: 80px; overflow-x: hidden; }
+        
         header { background: linear-gradient(135deg, var(--primary-ocean), #2d8bb1); color: var(--foam-white); padding: 30px 20px; text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; box-shadow: 0 4px 15px var(--sea-shadow); }
-        header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 5px; }
-        header p { font-size: 0.85rem; font-weight: 300; opacity: 0.8; }
+        header h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 5px; }
+        header p { font-size: 0.9rem; font-weight: 300; opacity: 0.8; letter-spacing: 1px; }
+        
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
         
-        /* 頂層大資產卡片 */
-        .balance-card { background: var(--foam-white); border-radius: 16px; padding: 20px; margin-bottom: 25px; box-shadow: 0 8px 24px var(--sea-shadow); border: 1px solid rgba(26, 95, 122, 0.05); }
-        .balance-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; margin-bottom: 15px; }
-        .balance-card h3 { font-size: 0.95rem; color: var(--primary-ocean); font-weight: 700; }
+        /* 頂層大資產總額卡片 */
+        .balance-card { background: var(--foam-white); border-radius: 16px; padding: 20px; margin-bottom: 25px; box-shadow: 0 6px 20px var(--sea-shadow); border: 1px solid rgba(26, 95, 122, 0.05); }
+        .balance-card h3 { font-size: 0.95rem; color: var(--text-muted); font-weight: 500; margin-bottom: 6px; letter-spacing: 1px; }
+        .main-total-display { font-size: 1.9rem; font-weight: 700; color: var(--primary-ocean); }
+
+        /* 頁面切換核心動畫與容器 */
+        .app-view { display: none; }
+        .app-view.active { display: block; animation: slideIn 0.35s ease-out; }
+
+        /* 大項目方塊網格 (2欄網格) */
+        .main-sector-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-bottom: 10px;
+        }
+
+        /* 大項目方塊樣式 */
+        .sector-cube-btn {
+            background: var(--foam-white);
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            min-height: 120px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(34, 111, 141, 0.04);
+            transition: all 0.25s ease;
+        }
+        .sector-cube-btn:active {
+            transform: scale(0.96);
+            background-color: #f8fafc;
+            border-color: var(--primary-ocean);
+        }
         
-        /* 兩欄網格佈局 */
-        .financial-grid {
+        .cube-icon-title {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .cube-icon { font-size: 1.6rem; }
+        .cube-title { font-size: 1rem; font-weight: 700; color: var(--text-dark); }
+        
+        .cube-footer {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .cube-amount { font-size: 1.15rem; font-weight: 700; color: var(--primary-ocean); }
+        .cube-arrow { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* 子頁面專屬：返回大綱按鈕 */
+        .back-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--primary-ocean);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .back-bar:active { background-color: #f1f5f9; }
+
+        /* 子頁面內部細項方塊網格布局 */
+        .sub-details-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
         }
 
-        /* 大類別區塊外殼 */
-        .eco-block {
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 15px;
-        }
-        .eco-block.grid-item { margin-bottom: 0; }
-
-        /* 大類別標題：支援流暢雙向折疊 */
-        .eco-block-title {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            padding-bottom: 6px;
-            border-bottom: 2px solid var(--sunny-amber);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            user-select: none;
-            margin-bottom: 8px;
-        }
-        .sector-arrow {
-            font-size: 0.7rem;
-            color: var(--primary-ocean);
-            transition: transform 0.25s ease;
-        }
-
-        /* 大類別內容的伸縮容器 */
-        .sector-content {
-            max-height: 2500px;
-            overflow: hidden;
-            transition: max-height 0.3s ease-in-out;
-        }
-
-        /* 同銀行二級聚合外殼橫條 */
-        .bank-group-wrapper {
+        /* 細項方塊外殼 */
+        .detail-cube-item {
             background: var(--foam-white);
-            border-radius: 8px;
-            margin-bottom: 6px;
+            border-radius: 14px;
             border: 1px solid #edf2f7;
-        }
-        .bank-header {
+            padding: 14px;
             display: flex;
+            flex-direction: column;
             justify-content: space-between;
-            align-items: center;
-            padding: 10px 8px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 500;
+            min-height: 95px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.02);
         }
-        .bank-title {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 140px;
-        }
-        .bank-sum {
-            font-weight: 700;
-            color: var(--primary-ocean);
-        }
-        .bank-arrow {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            transition: transform 0.2s ease;
-            margin-left: 4px;
-            display: inline-block;
-        }
-        .bank-child-list {
-            list-style: none;
-            padding: 0 8px;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.25s ease-out;
-            background-color: #fafbfc;
-        }
-        
-        /* 展開明細後的單條樣式（100% 呈現真實全名） */
-        .balance-item { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 8px 4px; 
-            font-size: 0.78rem; 
-            border-bottom: 1px dashed #edf2f7;
-        }
-        .balance-item:last-child { border-bottom: none; }
-        .account-name { color: #718093; line-height: 1.3; word-break: break-all; padding-right: 6px; }
-        .account-val { font-weight: 600; color: #1a5f7a; white-space: nowrap; }
+        .detail-cube-title { font-size: 0.9rem; font-weight: 700; color: var(--text-dark); line-height: 1.3; }
+        .detail-cube-amount { font-size: 1.1rem; font-weight: 700; color: var(--primary-ocean); margin-top: auto; }
+        .detail-cube-currency { font-size: 0.7rem; color: var(--text-muted); font-weight: 400; margin-left: 2px; }
 
         /* 表單與其他設定 */
-        .form-card { background: var(--foam-white); border-radius: 16px; padding: 24px; box-shadow: 0 8px 24px var(--sea-shadow); display: none; }
+        .form-card { background: var(--foam-white); border-radius: 16px; padding: 24px; box-shadow: 0 8px 24px var(--sea-shadow); border: 1px solid rgba(26, 95, 122, 0.05); display: none; }
         .form-card.active { display: block; animation: fadeIn 0.4s ease; }
-        .form-title { font-size: 1.2rem; color: var(--primary-ocean); margin-bottom: 20px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .form-title { font-size: 1.25rem; color: var(--primary-ocean); margin-bottom: 20px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
         .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 500; }
+        .form-group label { display: block; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 500; }
         .form-control { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 1rem; color: var(--text-dark); background-color: #fafbfc; transition: all 0.3s ease; outline: none; }
         .form-control:focus { border-color: var(--primary-ocean); background-color: var(--foam-white); box-shadow: 0 0 0 3px rgba(26, 95, 122, 0.1); }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .btn-submit { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--sunny-amber), #f39c12); color: white; border: none; border-radius: 12px; font-size: 1.05rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3); transition: transform 0.2s, opacity 0.2s; margin-top: 10px; }
         .btn-submit:active { transform: scale(0.98); opacity: 0.9; }
+        
+        /* 底部導航 */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background-color: rgba(255, 255, 255, 0.92); backdrop-filter: blur(10px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(0, 0, 0, 0.05); box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.02); z-index: 100; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); text-decoration: none; font-size: 0.75rem; cursor: pointer; transition: color 0.3s; background: none; border: none; flex: 1; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); text-decoration: none; font-size: 0.8rem; cursor: pointer; transition: color 0.3s; background: none; border: none; flex: 1; }
         .nav-item.active { color: var(--primary-ocean); font-weight: 700; }
-        .nav-icon { font-size: 1.3rem; margin-bottom: 2px; }
+        .nav-icon { font-size: 1.4rem; margin-bottom: 2px; }
+        
+        @keyframes slideIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>ZHIXIAN'S LEDGER</h1>
-        <p>理財如馭浪，心之所向，即是遠方</p>
+        <h1>Zhixian's Accounting💰</h1>
+        <p>認真賺錢，謹慎花錢，多多存錢，快樂玩耍！</p>
     </header>
 
     <div class="container">
         
-        <div class="balance-card">
-            <div class="balance-header" onclick="toggleMainBalance()">
-                <h3>🌊 智慧分流資產面板</h3>
-                <span id="foldArrow" style="transition: transform 0.3s ease; color: var(--primary-ocean); font-weight: bold;">▼</span>
+        <div id="view-main-dashboard" class="app-view active">
+            <div class="balance-card">
+                <h3>🌊 預估總資產 (台幣換算)</h3>
+                <div class="main-total-display">NT$ <span id="grand-total-display">0</span></div>
             </div>
-            <div id="balanceContent" style="max-height: 4000px; overflow: hidden; transition: max-height 0.4s ease-in-out;">
-                
-                <div class="eco-block">
-                    <div class="eco-block-title" onclick="toggleSector('cash')">
-                        <span>💵 現金現鈔</span>
-                        <span class="sector-arrow" id="arrow-cash">▼</span>
-                    </div>
-                    <div class="sector-content" id="sector-cash"></div>
-                </div>
 
-                <div class="eco-block">
-                    <div class="eco-block-title" onclick="toggleSector('traditional')">
-                        <span>🏛️ 實體銀行</span>
-                        <span class="sector-arrow" id="arrow-traditional">▼</span>
+            <div class="main-sector-grid">
+                <div class="sector-cube-btn" onclick="navigateToDetail('cash', '💵 現金現鈔')">
+                    <div class="cube-icon-title">
+                        <span class="cube-icon">💵</span>
+                        <span class="cube-title">現金現鈔</span>
                     </div>
-                    <div class="sector-content" id="sector-traditional"></div>
-                </div>
-
-                <div class="eco-block">
-                    <div class="eco-block-title" onclick="toggleSector('digital')">
-                        <span>📱 數位銀行</span>
-                        <span class="sector-arrow" id="arrow-digital">▼</span>
-                    </div>
-                    <div class="sector-content" id="sector-digital"></div>
-                </div>
-
-                <div class="eco-block">
-                    <div class="eco-block-title" onclick="toggleSector('pure')">
-                        <span>🌐 純網銀</span>
-                        <span class="sector-arrow" id="arrow-pure">▼</span>
-                    </div>
-                    <div class="sector-content" id="sector-pure"></div>
-                </div>
-
-                <div class="financial-grid">
-                    <div class="eco-block grid-item">
-                        <div class="eco-block-title" onclick="toggleSector('epay')">
-                            <span>💳 電子支付</span>
-                            <span class="sector-arrow" id="arrow-epay">▼</span>
-                        </div>
-                        <div class="sector-content" id="sector-epay"></div>
-                    </div>
-                    <div class="eco-block grid-item">
-                        <div class="eco-block-title" onclick="toggleSector('credit')">
-                            <span>🌹 信用卡</span>
-                            <span class="sector-arrow" id="arrow-credit">▼</span>
-                        </div>
-                        <div class="sector-content" id="sector-credit"></div>
+                    <div class="cube-footer">
+                        <span class="cube-amount" id="cube-total-cash">0</span>
+                        <span class="cube-arrow">➔</span>
                     </div>
                 </div>
 
+                <div class="sector-cube-btn" onclick="navigateToDetail('traditional', '🏛️ 實體銀行')">
+                    <div class="cube-icon-title">
+                        <span class="cube-icon">🏛️</span>
+                        <span class="cube-title">實體銀行</span>
+                    </div>
+                    <div class="cube-footer">
+                        <span class="cube-amount" id="cube-total-traditional">0</span>
+                        <span class="cube-arrow">➔</span>
+                    </div>
+                </div>
+
+                <div class="sector-cube-btn" onclick="navigateToDetail('digital', '📱 數位銀行')">
+                    <div class="cube-icon-title">
+                        <span class="cube-icon">📱</span>
+                        <span class="cube-title">數位銀行</span>
+                    </div>
+                    <div class="cube-footer">
+                        <span class="cube-amount" id="cube-total-digital">0</span>
+                        <span class="cube-arrow">➔</span>
+                    </div>
+                </div>
+
+                <div class="sector-cube-btn" onclick="navigateToDetail('pure', '🌐 純網銀')">
+                    <div class="cube-icon-title">
+                        <span class="cube-icon">🌐</span>
+                        <span class="cube-title">純網銀</span>
+                    </div>
+                    <div class="cube-footer">
+                        <span class="cube-amount" id="cube-total-pure">0</span>
+                        <span class="cube-arrow">➔</span>
+                    </div>
+                </div>
+
+                <div class="sector-cube-btn" onclick="navigateToDetail('epay', '💳 電子支付')">
+                    <div class="cube-icon-title">
+                        <span class="cube-icon">💳</span>
+                        <span class="cube-title">電子支付</span>
+                    </div>
+                    <div class="cube-footer">
+                        <span class="cube-amount" id="cube-total-epay">0</span>
+                        <span class="cube-arrow">➔</span>
+                    </div>
+                </div>
+
+                <div class="sector-cube-btn" onclick="navigateToDetail('credit', '🌹 信用卡')">
+                    <div class="cube-icon-title">
+                        <span class="cube-icon">🌹</span>
+                        <span class="cube-title">信用卡</span>
+                    </div>
+                    <div class="cube-footer">
+                        <span class="cube-amount" id="cube-total-credit">0</span>
+                        <span class="cube-arrow">➔</span>
+                    </div>
+                </div>
+
+                <div class="sector-cube-btn" onclick="navigateToDetail('prepaid', '🎁 儲值卡')">
+                    <div class="cube-icon-title">
+                        <span class="cube-icon">🎁</span>
+                        <span class="cube-title">儲值卡</span>
+                    </div>
+                    <div class="cube-footer">
+                        <span class="cube-amount" id="cube-total-prepaid">0</span>
+                        <span class="cube-arrow">➔</span>
+                    </div>
+                </div>
+
+                <div class="sector-cube-btn" onclick="navigateToDetail('foreignCash', '✈️ 外幣現鈔')">
+                    <div class="cube-icon-title">
+                        <span class="cube-icon">✈️</span>
+                        <span class="cube-title">外幣現鈔</span>
+                    </div>
+                    <div class="cube-footer">
+                        <span class="cube-amount" id="cube-total-foreignCash">0</span>
+                        <span class="cube-arrow">➔</span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div id="panel-transaction" class="form-card active">
+        <div id="view-sector-detail" class="app-view">
+            <div class="back-bar" onclick="backToDashboard()">
+                <span>⬅</span> <span id="detail-page-title">詳細帳戶資料</span>
+            </div>
+            
+            <div class="sub-details-grid" id="detail-cubes-root"></div>
+        </div>
+
+        <div id="panel-transaction" class="form-card">
             <div class="form-title"><span>⛺</span> 日常生活記帳</div>
             <form id="txForm">
                 <div class="form-group">
@@ -350,70 +405,75 @@
 
     </div>
 
-    <nav class="bottom-nav">
-        <button class="nav-item active" onclick="switchPanel('transaction', this)">
-            <div class="nav-icon">⛺</div>
-            <div>日常記帳</div>
+    <div class="bottom-nav">
+        <button class="nav-item active" onclick="switchNav('dashboard', this)">
+            <span class="nav-icon">🌊</span><span>總資產</span>
         </button>
-        <button class="nav-item" onclick="switchPanel('stock', this)">
-            <div class="nav-icon">⛵</div>
-            <div>股票交易</div>
+        <button class="nav-item" onclick="switchNav('transaction', this)">
+            <span class="nav-icon">⛺</span><span>生活記帳</span>
         </button>
-        <button class="nav-item" onclick="switchPanel('loan', this)">
-            <div class="nav-icon">🤝</div>
-            <div>借貸管理</div>
+        <button class="nav-item" onclick="switchNav('stock', this)">
+            <span class="nav-icon">⛵</span><span>股票操盤</span>
         </button>
-    </nav>
+        <button class="nav-item" onclick="switchNav('loan', this)">
+            <span class="nav-icon">🤝</span><span>借貸追蹤</span>
+        </button>
+    </div>
 
     <script>
         const GAS_API_URL = "https://script.google.com/macros/s/AKfycbygbG4FxYl4dQloJdMXRw-mxlWDtoAfhNc4h92jM3UlS9azOr88Ot3jTtuAEhKlCGOwnA/exec";
+        
+        let globalCachedSectors = {
+            cash: [], traditional: [], digital: [], pure: [], epay: [], credit: [], prepaid: [], foreignCash: []
+        };
 
-        function toggleMainBalance() {
-            const content = document.getElementById("balanceContent");
-            const arrow = document.getElementById("foldArrow");
-            if (content.style.maxHeight === "0px" || content.style.maxHeight === "") {
-                content.style.maxHeight = "4000px";
-                arrow.style.transform = "rotate(0deg)";
-            } else {
-                content.style.maxHeight = "0px";
-                arrow.style.transform = "rotate(-90deg)";
-            }
-        }
-
-        // 大分類外殼自由雙向收合
-        function toggleSector(sectorId) {
-            const content = document.getElementById("sector-" + sectorId);
-            const arrow = document.getElementById("arrow-" + sectorId);
-            
-            if (content.style.maxHeight === "0px" || !content.style.maxHeight) {
-                content.style.maxHeight = "2500px"; 
-                arrow.style.transform = "rotate(0deg)"; 
-            } else {
-                content.style.maxHeight = "0px"; 
-                arrow.style.transform = "rotate(-90deg)"; 
-            }
-        }
-
-        // 二級內部群組折疊邏輯 (點擊個別主銀行橫條展開/收合)
-        function toggleBankGroup(bankId) {
-            const list = document.getElementById("bank-list-" + bankId);
-            const arrow = document.getElementById("bank-arrow-" + bankId);
-            
-            if (list.style.maxHeight === "0px" || !list.style.maxHeight) {
-                list.style.maxHeight = "600px"; 
-                arrow.style.transform = "rotate(90deg)"; 
-            } else {
-                list.style.maxHeight = "0px"; 
-                arrow.style.transform = "rotate(0deg)"; 
-            }
-        }
-
-        function switchPanel(panelId, element) {
+        function switchNav(target, element) {
             document.querySelectorAll('.form-card').forEach(card => card.classList.remove('active'));
+            document.querySelectorAll('.app-view').forEach(view => view.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            document.getElementById('panel-' + panelId).classList.add('active');
+            
             element.classList.add('active');
+            
+            if (target === 'dashboard') {
+                document.getElementById('view-main-dashboard').classList.add('active');
+            } else {
+                document.getElementById('panel-' + target).classList.add('active');
+            }
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function navigateToDetail(sectorKey, pageTitle) {
+            document.getElementById('view-main-dashboard').classList.remove('active');
+            document.getElementById('detail-page-title').textContent = pageTitle;
+            
+            const root = document.getElementById('detail-cubes-root');
+            root.innerHTML = "";
+            
+            const targetedAccounts = globalCachedSectors[sectorKey] || [];
+            
+            if(targetedAccounts.length === 0) {
+                root.innerHTML = '<p style="color:#a0aec0; font-size:0.9rem; padding:20px; text-align:center; grid-column: span 2;">此大項目前無任何帳戶資料</p>';
+            } else {
+                targetedAccounts.forEach(acc => {
+                    root.innerHTML += `
+                        <div class="detail-cube-item">
+                            <span class="detail-cube-title">${acc.name}</span>
+                            <span class="detail-cube-amount">
+                                ${acc.formattedBalance}
+                                <small class="detail-cube-currency">(${acc.currency})</small>
+                            </span>
+                        </div>
+                    `;
+                });
+            }
+            
+            document.getElementById('view-sector-detail').classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function backToDashboard() {
+            document.getElementById('view-sector-detail').classList.remove('active');
+            document.getElementById('view-main-dashboard').classList.add('active');
         }
 
         const today = new Date().toISOString().split('T')[0];
@@ -426,12 +486,6 @@
         });
 
         function fetchAccounts() {
-            const secTraditional = document.getElementById("sector-traditional");
-            const secDigital = document.getElementById("sector-digital");
-            const secPure = document.getElementById("sector-pure");
-            const secEpay = document.getElementById("sector-epay");
-            const secCredit = document.getElementById("sector-credit");
-            const secCash = document.getElementById("sector-cash");
             const selectElements = document.querySelectorAll(".account-select");
 
             fetch(GAS_API_URL)
@@ -440,21 +494,16 @@
                     if (res.status === "success") {
                         const accounts = res.data;
                         
-                        secTraditional.innerHTML = "";
-                        secDigital.innerHTML = "";
-                        secPure.innerHTML = "";
-                        secEpay.innerHTML = "";
-                        secCredit.innerHTML = "";
-                        secCash.innerHTML = "";
+                        globalCachedSectors = { cash: [], traditional: [], digital: [], pure: [], epay: [], credit: [], prepaid: [], foreignCash: [] };
                         
                         selectElements.forEach(select => {
                             select.innerHTML = select.id === "txAccountIn" ? '<option value="">-- 無 (非轉帳) --</option>' : '';
                         });
 
-                        const groupedData = {};
+                        let grandTotalTWD = 0;
+                        const sectorTotals = { "現金現鈔": 0, "實體銀行": 0, "數位銀行": 0, "純網銀": 0, "電子支付": 0, "信用卡": 0, "儲值卡": 0, "外幣現鈔": 0 };
 
                         accounts.forEach(acc => {
-                            // 100% 注入三大表單的所有選單中
                             selectElements.forEach(select => {
                                 const option = document.createElement("option");
                                 option.value = acc.name;
@@ -462,87 +511,37 @@
                                 select.appendChild(option);
                             });
 
-                            const val = typeof acc.balance === "number" ? acc.balance.toLocaleString('zh-TW') : (acc.balance || 0);
+                            const balanceNum = Number(acc.balance) || 0;
+                            const formattedVal = typeof acc.balance === "number" ? acc.balance.toLocaleString('zh-TW') : balanceNum.toLocaleString('zh-TW');
                             const sheetType = acc.type ? acc.type.trim() : "實體銀行";
-                            const bankNameValue = acc.bank ? acc.bank.trim() : "其它";
 
-                            // 1. 現金現鈔流 (聽從類型分流置頂)
-                            if (sheetType === "現金現鈔") {
-                                secCash.innerHTML += `
-                                    <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 12px; font-size:0.88rem; background:white; border-radius:8px; border:1px solid #edf2f7; margin-bottom:4px;">
-                                        <span style="font-weight:500; color:var(--text-dark);">${acc.name}</span>
-                                        <span style="font-weight:700; color:var(--primary-ocean);">${val} <small style="font-size:0.7rem; color:#7f8c8d;">(${acc.currency})</small></span>
-                                    </div>`;
-                                return;
+                            grandTotalTWD += balanceNum; 
+
+                            if (sectorTotals.hasOwnProperty(sheetType)) {
+                                sectorTotals[sheetType] += balanceNum;
                             }
 
-                            // 2. 核心聚合：改用你在 Excel 新增的 C 欄「銀行」值作為聚合標籤外殼
-                            const aggKey = sheetType + "_" + bankNameValue;
-
-                            if (!groupedData[aggKey]) {
-                                groupedData[aggKey] = {
-                                    bankTitle: bankNameValue, 
-                                    sector: sheetType,
-                                    totalBalance: 0,
-                                    subAccounts: []
-                                };
-                            }
-
-                            groupedData[aggKey].subAccounts.push({ fullName: acc.name, balance: val, currency: acc.currency });
-                            groupedData[aggKey].totalBalance += (Number(acc.balance) || 0);
+                            const accPack = { name: acc.name, formattedBalance: formattedVal, currency: acc.currency };
+                            
+                            if (sheetType === "現金現鈔") globalCachedSectors.cash.push(accPack);
+                            else if (sheetType === "實體銀行") globalCachedSectors.traditional.push(accPack);
+                            else if (sheetType === "數位銀行") globalCachedSectors.digital.push(accPack);
+                            else if (sheetType === "純網銀") globalCachedSectors.pure.push(accPack);
+                            else if (sheetType === "電子支付") globalCachedSectors.epay.push(accPack);
+                            else if (sheetType === "信用卡") globalCachedSectors.credit.push(accPack);
+                            else if (sheetType === "儲值卡") globalCachedSectors.prepaid.push(accPack);
+                            else if (sheetType === "外幣現鈔") globalCachedSectors.foreignCash.push(accPack);
                         });
 
-                        // 3. 動態渲染二級濃縮結構，並流暢綁定折疊與真名
-                        let bankIndex = 0;
-                        for (const key in groupedData) {
-                            const group = groupedData[key];
-                            const wrapper = document.createElement("div");
-                            wrapper.className = "bank-group-wrapper";
-                            
-                            const formattedTotal = group.totalBalance.toLocaleString('zh-TW', { maximumFractionDigits: 0 });
-                            
-                            wrapper.innerHTML = `
-                                <div class="bank-header" onclick="toggleBankGroup(${bankIndex})">
-                                    <span class="bank-title" title="${group.bankTitle}">${group.bankTitle}</span>
-                                    <div>
-                                        <span class="bank-sum">${formattedTotal}</span>
-                                        <span class="bank-arrow" id="bank-arrow-${bankIndex}">▶</span>
-                                    </div>
-                                </div>
-                            `;
-
-                            const childUl = document.createElement("ul");
-                            childUl.className = "bank-child-list";
-                            childUl.id = "bank-list-" + bankIndex;
-                            childUl.style.maxHeight = "0px"; 
-
-                            group.subAccounts.forEach(sub => {
-                                childUl.innerHTML += `
-                                    <li class="balance-item">
-                                        <span class="account-name">${sub.fullName}</span>
-                                        <span class="account-val">${sub.balance} <small class="currency-tag">(${sub.currency})</small></span>
-                                    </li>`;
-                            });
-
-                            wrapper.appendChild(childUl);
-
-                            // 精準投入你在 Excel 新設定的這 5 大分類格子
-                            if (group.sector === "實體銀行") secTraditional.appendChild(wrapper);
-                            else if (group.sector === "數位銀行") secDigital.appendChild(wrapper);
-                            else if (group.sector === "純網銀") secPure.appendChild(wrapper);
-                            else if (group.sector === "電子支付") secEpay.appendChild(wrapper);
-                            else if (group.sector === "信用卡") secCredit.appendChild(wrapper);
-
-                            bankIndex++;
-                        }
-
-                        // 空白防守
-                        if(!secTraditional.innerHTML) secTraditional.innerHTML = '<p style="color:#a0aec0; font-size:0.75rem; padding:4px;">無紀錄</p>';
-                        if(!secDigital.innerHTML) secDigital.innerHTML = '<p style="color:#a0aec0; font-size:0.75rem; padding:4px;">無紀錄</p>';
-                        if(!secPure.innerHTML) secPure.innerHTML = '<p style="color:#a0aec0; font-size:0.75rem; padding:4px;">無紀錄</p>';
-                        if(!secEpay.innerHTML) secEpay.innerHTML = '<p style="color:#a0aec0; font-size:0.75rem; padding:4px;">無紀錄</p>';
-                        if(!secCredit.innerHTML) secCredit.innerHTML = '<p style="color:#a0aec0; font-size:0.75rem; padding:4px;">無紀錄</p>';
-                        if(!secCash.innerHTML) secCash.innerHTML = '<p style="color:#a0aec0; font-size:0.75rem; padding:4px;">無紀錄</p>';
+                        document.getElementById("grand-total-display").textContent = grandTotalTWD.toLocaleString('zh-TW');
+                        document.getElementById("cube-total-cash").textContent = sectorTotals["現金現鈔"].toLocaleString('zh-TW');
+                        document.getElementById("cube-total-traditional").textContent = sectorTotals["實體銀行"].toLocaleString('zh-TW');
+                        document.getElementById("cube-total-digital").textContent = sectorTotals["數位銀行"].toLocaleString('zh-TW');
+                        document.getElementById("cube-total-pure").textContent = sectorTotals["純網銀"].toLocaleString('zh-TW');
+                        document.getElementById("cube-total-epay").textContent = sectorTotals["電子支付"].toLocaleString('zh-TW');
+                        document.getElementById("cube-total-credit").textContent = sectorTotals["信用卡"].toLocaleString('zh-TW');
+                        document.getElementById("cube-total-prepaid").textContent = sectorTotals["儲值卡"].toLocaleString('zh-TW');
+                        document.getElementById("cube-total-foreignCash").textContent = sectorTotals["外幣現鈔"].toLocaleString('zh-TW');
                     }
                 })
                 .catch(err => console.error("Error:", err));
@@ -567,7 +566,9 @@
                         const todayStr = new Date().toISOString().split('T')[0];
                         const dateInput = this.querySelector("input[type='date']");
                         if(dateInput) dateInput.value = todayStr;
+                        
                         fetchAccounts();
+                        document.querySelectorAll('.nav-item')[0].click();
                     } else { alert("❌ 寫入失敗: " + res.message); }
                 })
                 .catch(err => { alert("❌ 網路發生錯誤。"); console.error(err); })
