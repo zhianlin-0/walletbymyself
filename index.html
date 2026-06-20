@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zhixian's Accounting</title>
+    <title>Zhian's Accounting</title>
     
     <link class="apple-touch-icon" href="https://img.icons8.com/fluent/180/000000/sea-waves.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -21,7 +21,7 @@
             --text-muted: #7f8c8d;
         }
         
-        /* 核心：精準指定蘋果內建的翩翩體官方名稱 "HanziPen TC"，讓 iPhone 點開直接完美顯現翩翩手寫風 */
+        /* 核心：精準指定蘋果內建的翩翩體官方名稱 "HanziPen TC" */
         * { 
             box-sizing: border-box; 
             margin: 0; 
@@ -30,164 +30,112 @@
             -webkit-tap-highlight-color: transparent; 
         }
         
-        body { background-color: var(--sand-beach); color: var(--text-dark); padding-bottom: 80px; overflow-x: hidden; }
+        body { background-color: var(--sand-beach); color: var(--text-dark); padding-bottom: 70px; overflow-x: hidden; }
         
-        header { background: linear-gradient(135deg, var(--primary-ocean), #2d8bb1); color: var(--foam-white); padding: 30px 20px; text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; box-shadow: 0 4px 15px var(--sea-shadow); position: relative; }
-        header h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 5px; }
-        header p { font-size: 0.9rem; font-weight: 300; opacity: 0.8; letter-spacing: 1px; }
+        header { background: linear-gradient(135deg, var(--primary-ocean), #2d8bb1); color: var(--foam-white); padding: 18px 15px; text-align: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; box-shadow: 0 4px 12px var(--sea-shadow); position: relative; }
+        header h1 { font-size: 1.35rem; font-weight: 700; letter-spacing: 1.5px; margin-bottom: 3px; }
+        header p { font-size: 0.78rem; font-weight: 300; opacity: 0.85; letter-spacing: 0.5px; }
         
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; padding: 12px 14px; }
         
-        /* 頂層大資產總額卡片 - 改為彈性盒模型以利置中 */
+        /* 總資產面板 */
         .balance-card { 
-            background: var(--foam-white); 
-            border-radius: 16px; 
-            padding: 20px; 
-            margin-bottom: 25px; 
-            box-shadow: 0 6px 20px var(--sea-shadow); 
-            border: 1px solid rgba(26, 95, 122, 0.05);
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* 讓裡面的元素通通水平置中 */
-            text-align: center;
+            background: var(--foam-white); border-radius: 14px; padding: 12px 15px; margin-bottom: 16px; 
+            box-shadow: 0 4px 15px var(--sea-shadow); border: 1px solid rgba(26, 95, 122, 0.04);
+            display: flex; flex-direction: column; align-items: center; text-align: center;
         }
-        .balance-card h3 { font-size: 0.95rem; color: var(--text-muted); font-weight: 500; margin-bottom: 10px; letter-spacing: 1px; }
-        .main-total-display { font-size: 1.9rem; font-weight: 700; color: var(--primary-ocean); margin-top: 5px; }
+        .balance-card h3 { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; margin-bottom: 6px; letter-spacing: 0.5px; }
+        .main-total-display { font-size: 1.55rem; font-weight: 700; color: var(--primary-ocean); margin-top: 2px; }
 
-        /* 💡 新增/修改：置中隱私開關按鈕樣式 */
         .privacy-toggle-btn {
-            background: #f1f5f9;
-            color: var(--primary-ocean);
-            border: 1px solid #e2e8f0;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 8px; /* 與下方金額拉開距離 */
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
+            background: #f1f5f9; color: var(--primary-ocean); border: 1px solid #e2e8f0;
+            padding: 4px 12px; border-radius: 15px; font-size: 0.75rem; font-weight: 700;
+            cursor: pointer; transition: all 0.2s; margin-bottom: 4px; display: inline-flex; align-items: center; gap: 3px;
         }
-        .privacy-toggle-btn:active {
-            background: #e2e8f0;
-            transform: scale(0.97);
-        }
+        .privacy-toggle-btn:active { background: #e2e8f0; transform: scale(0.97); }
 
-        /* 頁面切換核心動畫與容器 */
         .app-view { display: none; }
-        .app-view.active { display: block; animation: slideIn 0.35s ease-out; }
+        .app-view.active { display: block; animation: slideIn 0.3s ease-out; }
 
-        /* 大項目方塊網格 (2欄網格) */
-        .main-sector-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-            margin-bottom: 10px;
-        }
+        /* 首頁 8 大項目方塊網格 */
+        .main-sector-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 8px; }
 
-        /* 大項目方塊樣式 */
         .sector-cube-btn {
-            background: var(--foam-white);
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 20px 16px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: flex-start;
-            min-height: 120px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(34, 111, 141, 0.04);
-            transition: all 0.25s ease;
+            background: var(--foam-white); border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 12px;
+            display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start;
+            min-height: 85px; cursor: pointer; box-shadow: 0 3px 8px rgba(34, 111, 141, 0.03); transition: all 0.2s ease;
         }
-        .sector-cube-btn:active {
-            transform: scale(0.96);
-            background-color: #f8fafc;
-            border-color: var(--primary-ocean);
-        }
+        .sector-cube-btn:active { transform: scale(0.97); background-color: #f8fafc; }
         
-        .cube-icon-title {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .cube-icon { font-size: 1.6rem; }
-        .cube-title { font-size: 1rem; font-weight: 700; color: var(--text-dark); }
-        
-        .cube-footer {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
-        }
-        
-        .cube-amount { font-size: 1.15rem; font-weight: 700; color: var(--primary-ocean); }
-        .cube-arrow { font-size: 0.8rem; color: var(--text-muted); }
+        .cube-icon-title { display: flex; flex-direction: column; gap: 3px; }
+        .cube-icon { font-size: 1.15rem; }
+        .cube-title { font-size: 0.82rem; font-weight: 700; color: var(--text-dark); }
+        .cube-footer { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
+        .cube-amount { font-size: 0.95rem; font-weight: 700; color: var(--primary-ocean); }
+        .cube-arrow { font-size: 0.65rem; color: var(--text-muted); }
 
-        /* 子頁面專屬：返回大綱按鈕 */
+        /* 子頁面返回列 */
         .back-bar {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 16px;
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--primary-ocean);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            display: flex; align-items: center; gap: 6px; padding: 10px 12px; background: #ffffff;
+            border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 14px; cursor: pointer;
+            font-size: 0.85rem; font-weight: 700; color: var(--primary-ocean);
         }
         .back-bar:active { background-color: #f1f5f9; }
 
-        /* 子頁面內部細項方塊網格布局 */
-        .sub-details-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
+        /* 子頁面內部細項方塊網格 */
+        .sub-details-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 
-        /* 細項方塊外殼 */
+        /* 細項內部同銀行聚合方塊卡片結構 */
         .detail-cube-item {
-            background: var(--foam-white);
-            border-radius: 14px;
-            border: 1px solid #edf2f7;
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            min-height: 95px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.02);
+            background: var(--foam-white); border-radius: 12px; border: 1px solid #edf2f7;
+            display: flex; flex-direction: column; justify-content: space-between; min-height: 75px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.01); overflow: hidden; grid-column: span 1;
         }
-        .detail-cube-title { font-size: 0.9rem; font-weight: 700; color: var(--text-dark); line-height: 1.3; }
-        .detail-cube-amount { font-size: 1.1rem; font-weight: 700; color: var(--primary-ocean); margin-top: auto; }
-        .detail-cube-currency { font-size: 0.7rem; color: var(--text-muted); font-weight: 400; margin-left: 2px; }
+        .detail-cube-item.cash-style { justify-content: space-between; padding: 10px 12px; }
 
-        /* 表單與其他設定 */
-        .form-card { background: var(--foam-white); border-radius: 16px; padding: 24px; box-shadow: 0 8px 24px var(--sea-shadow); border: 1px solid rgba(26, 95, 122, 0.05); display: none; }
-        .form-card.active { display: block; animation: fadeIn 0.4s ease; }
-        .form-title { font-size: 1.25rem; color: var(--primary-ocean); margin-bottom: 20px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 500; }
-        .form-control { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 1rem; color: var(--text-dark); background-color: #fafbfc; transition: all 0.3s ease; outline: none; }
-        .form-control:focus { border-color: var(--primary-ocean); background-color: var(--foam-white); box-shadow: 0 0 0 3px rgba(26, 95, 122, 0.1); }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .btn-submit { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--sunny-amber), #f39c12); color: white; border: none; border-radius: 12px; font-size: 1.05rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3); transition: transform 0.2s, opacity 0.2s; margin-top: 10px; }
-        .btn-submit:active { transform: scale(0.98); opacity: 0.9; }
+        .detail-cube-header {
+            padding: 10px 12px; cursor: pointer; display: flex; flex-direction: column;
+            justify-content: space-between; min-height: 75px; width: 100%; position: relative;
+        }
+        .detail-cube-title { font-size: 0.78rem; font-weight: 700; color: var(--text-dark); line-height: 1.2; }
         
-        /* 底部導航 */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background-color: rgba(255, 255, 255, 0.92); backdrop-filter: blur(10px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(0, 0, 0, 0.05); box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.02); z-index: 100; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); text-decoration: none; font-size: 0.8rem; cursor: pointer; transition: color 0.3s; background: none; border: none; flex: 1; }
+        .detail-cube-footer-row {
+            display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: auto;
+        }
+        .detail-cube-amount { font-size: 0.92rem; font-weight: 700; color: var(--primary-ocean); }
+        .detail-cube-arrow { font-size: 0.6rem; color: var(--text-muted); transition: transform 0.2s ease; }
+
+        /* 抽屜展開後的明細列表 */
+        .detail-child-drawer {
+            list-style: none; padding: 0; max-height: 0; overflow: hidden;
+            transition: max-height 0.25s ease-out; background-color: #f8fafc; border-top: 1px dashed #edf2f7;
+        }
+        .drawer-item {
+            display: flex; flex-direction: column; align-items: flex-start;
+            padding: 6px 12px; gap: 1px; border-bottom: 1px solid #ffffff;
+        }
+        .drawer-item:last-child { border-bottom: none; }
+        .drawer-acc-name { color: #718093; font-size: 0.7rem; line-height: 1.2; word-break: break-all; }
+        .drawer-acc-val { font-weight: 600; color: #2d8bb1; font-size: 0.76rem; }
+
+        /* 記帳表單卡片 */
+        .form-card { background: var(--foam-white); border-radius: 14px; padding: 16px 18px; box-shadow: 0 6px 16px var(--sea-shadow); border: 1px solid rgba(26, 95, 122, 0.04); display: none; }
+        .form-card.active { display: block; animation: fadeIn 0.3s ease; }
+        .form-title { font-size: 1.05rem; color: var(--primary-ocean); margin-bottom: 14px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 500; }
+        .form-control { width: 100%; padding: 9px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; color: var(--text-dark); background-color: #fafbfc; outline: none; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn-submit { width: 100%; padding: 11px; background: linear-gradient(135deg, var(--sunny-amber), #f39c12); color: white; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700; cursor: pointer; margin-top: 6px; }
+        
+        /* 下方功能選單 */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 56px; background-color: rgba(255, 255, 255, 0.94); backdrop-filter: blur(8px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(0, 0, 0, 0.04); z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); text-decoration: none; font-size: 0.7rem; cursor: pointer; background: none; border: none; flex: 1; }
         .nav-item.active { color: var(--primary-ocean); font-weight: 700; }
-        .nav-icon { font-size: 1.4rem; margin-bottom: 2px; }
+        .nav-icon { font-size: 1.15rem; margin-bottom: 1px; }
         
-        @keyframes slideIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -202,99 +150,49 @@
         <div id="view-main-dashboard" class="app-view active">
             <div class="balance-card">
                 <h3>🌊 預估總資產 (台幣換算)</h3>
-                
                 <button class="privacy-toggle-btn" id="privacyBtn" onclick="togglePrivacy()">🔒 億萬小公主</button>
-                
                 <div class="main-total-display">NT$ <span id="grand-total-display">••••••</span></div>
             </div>
 
             <div class="main-sector-grid">
                 <div class="sector-cube-btn" onclick="navigateToDetail('cash', '💵 現金現鈔')">
-                    <div class="cube-icon-title">
-                        <span class="cube-icon">💵</span>
-                        <span class="cube-title">現金現鈔</span>
-                    </div>
-                    <div class="cube-footer">
-                        <span class="cube-amount" id="cube-total-cash">••••••</span>
-                        <span class="cube-arrow">➔</span>
-                    </div>
+                    <div class="cube-icon-title"><span class="cube-icon">💵</span><span class="cube-title">現金現鈔</span></div>
+                    <div class="cube-footer"><span class="cube-amount" id="cube-total-cash">••••••</span><span class="cube-arrow">➔</span></div>
                 </div>
 
                 <div class="sector-cube-btn" onclick="navigateToDetail('traditional', '🏛️ 實體銀行')">
-                    <div class="cube-icon-title">
-                        <span class="cube-icon">🏛️</span>
-                        <span class="cube-title">實體銀行</span>
-                    </div>
-                    <div class="cube-footer">
-                        <span class="cube-amount" id="cube-total-traditional">••••••</span>
-                        <span class="cube-arrow">➔</span>
-                    </div>
+                    <div class="cube-icon-title"><span class="cube-icon">🏛️</span><span class="cube-title">實體銀行</span></div>
+                    <div class="cube-footer"><span class="cube-amount" id="cube-total-traditional">••••••</span><span class="cube-arrow">➔</span></div>
                 </div>
 
                 <div class="sector-cube-btn" onclick="navigateToDetail('digital', '📱 數位銀行')">
-                    <div class="cube-icon-title">
-                        <span class="cube-icon">📱</span>
-                        <span class="cube-title">數位銀行</span>
-                    </div>
-                    <div class="cube-footer">
-                        <span class="cube-amount" id="cube-total-digital">••••••</span>
-                        <span class="cube-arrow">➔</span>
-                    </div>
+                    <div class="cube-icon-title"><span class="cube-icon">📱</span><span class="cube-title">數位銀行</span></div>
+                    <div class="cube-footer"><span class="cube-amount" id="cube-total-digital">••••••</span><span class="cube-arrow">➔</span></div>
                 </div>
 
                 <div class="sector-cube-btn" onclick="navigateToDetail('pure', '🌐 純網銀')">
-                    <div class="cube-icon-title">
-                        <span class="cube-icon">🌐</span>
-                        <span class="cube-title">純網銀</span>
-                    </div>
-                    <div class="cube-footer">
-                        <span class="cube-amount" id="cube-total-pure">••••••</span>
-                        <span class="cube-arrow">➔</span>
-                    </div>
+                    <div class="cube-icon-title"><span class="cube-icon">🌐</span><span class="cube-title">純網銀</span></div>
+                    <div class="cube-footer"><span class="cube-amount" id="cube-total-pure">••••••</span><span class="cube-arrow">➔</span></div>
                 </div>
 
                 <div class="sector-cube-btn" onclick="navigateToDetail('epay', '💳 電子支付')">
-                    <div class="cube-icon-title">
-                        <span class="cube-icon">💳</span>
-                        <span class="cube-title">電子支付</span>
-                    </div>
-                    <div class="cube-footer">
-                        <span class="cube-amount" id="cube-total-epay">••••••</span>
-                        <span class="cube-arrow">➔</span>
-                    </div>
+                    <div class="cube-icon-title"><span class="cube-icon">💳</span><span class="cube-title">電子支付</span></div>
+                    <div class="cube-footer"><span class="cube-amount" id="cube-total-epay">••••••</span><span class="cube-arrow">➔</span></div>
                 </div>
 
                 <div class="sector-cube-btn" onclick="navigateToDetail('credit', '🌹 信用卡')">
-                    <div class="cube-icon-title">
-                        <span class="cube-icon">🌹</span>
-                        <span class="cube-title">信用卡</span>
-                    </div>
-                    <div class="cube-footer">
-                        <span class="cube-amount" id="cube-total-credit">••••••</span>
-                        <span class="cube-arrow">➔</span>
-                    </div>
+                    <div class="cube-icon-title"><span class="cube-icon">🌹</span><span class="cube-title">信用卡</span></div>
+                    <div class="cube-footer"><span class="cube-amount" id="cube-total-credit">••••••</span><span class="cube-arrow">➔</span></div>
                 </div>
 
                 <div class="sector-cube-btn" onclick="navigateToDetail('prepaid', '🎁 儲值卡')">
-                    <div class="cube-icon-title">
-                        <span class="cube-icon">🎁</span>
-                        <span class="cube-title">儲值卡</span>
-                    </div>
-                    <div class="cube-footer">
-                        <span class="cube-amount" id="cube-total-prepaid">••••••</span>
-                        <span class="cube-arrow">➔</span>
-                    </div>
+                    <div class="cube-icon-title"><span class="cube-icon">🎁</span><span class="cube-title">儲值卡</span></div>
+                    <div class="cube-footer"><span class="cube-amount" id="cube-total-prepaid">••••••</span><span class="cube-arrow">➔</span></div>
                 </div>
 
                 <div class="sector-cube-btn" onclick="navigateToDetail('foreignCash', '✈️ 外幣現鈔')">
-                    <div class="cube-icon-title">
-                        <span class="cube-icon">✈️</span>
-                        <span class="cube-title">外幣現鈔</span>
-                    </div>
-                    <div class="cube-footer">
-                        <span class="cube-amount" id="cube-total-foreignCash">••••••</span>
-                        <span class="cube-arrow">➔</span>
-                    </div>
+                    <div class="cube-icon-title"><span class="cube-icon">✈️</span><span class="cube-title">外幣現鈔</span></div>
+                    <div class="cube-footer"><span class="cube-amount" id="cube-total-foreignCash">••••••</span><span class="cube-arrow">➔</span></div>
                 </div>
             </div>
         </div>
@@ -310,10 +208,7 @@
         <div id="panel-transaction" class="form-card">
             <div class="form-title"><span>⛺</span> 日常生活記帳</div>
             <form id="txForm">
-                <div class="form-group">
-                    <label>日期</label>
-                    <input type="date" id="txDate" class="form-control" required>
-                </div>
+                <div class="form-group"><label>日期</label><input type="date" id="txDate" class="form-control" required></div>
                 <div class="form-group">
                     <label>交易類型</label>
                     <select id="txType" class="form-control">
@@ -322,21 +217,10 @@
                         <option value="轉帳">轉帳 (Transfer)</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>扣款帳戶 (出)</label>
-                    <select id="txAccountOut" class="form-control account-select"></select>
-                </div>
-                <div class="form-group">
-                    <label>存入帳戶 (入，僅轉帳/收入需要)</label>
-                    <select id="txAccountIn" class="form-control account-select">
-                        <option value="">-- 無 --</option>
-                    </select>
-                </div>
+                <div class="form-group"><label>扣款帳戶 (出)</label><select id="txAccountOut" class="form-control account-select"></select></div>
+                <div class="form-group"><label>存入帳戶 (入)</label><select id="txAccountIn" class="form-control account-select"><option value="">-- 無 --</option></select></div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>金額</label>
-                        <input type="number" id="txAmount" class="form-control" placeholder="0" required min="0">
-                    </div>
+                    <div class="form-group"><label>金額</label><input type="number" id="txAmount" class="form-control" placeholder="0" required min="0"></div>
                     <div class="form-group">
                         <label>幣別</label>
                         <select id="txCurrency" class="form-control">
@@ -347,63 +231,34 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>主分類</label>
-                        <input type="text" id="txMainCat" class="form-control" placeholder="如: 餐飲、戶外">
-                    </div>
-                    <div class="form-group">
-                        <label>子分類</label>
-                        <input type="text" id="txSubCat" class="form-control" placeholder="如: 浪板租借">
-                    </div>
+                    <div class="form-group"><label>主分類</label><input type="text" id="txMainCat" class="form-control" placeholder="如: 餐飲"></div>
+                    <div class="form-group"><label>子分類</label><input type="text" id="txSubCat" class="form-control" placeholder="如: 浪板租借"></div>
                 </div>
-                <div class="form-group">
-                    <label>備註</label>
-                    <input type="text" id="txNote" class="form-control" placeholder="寫下這趟旅程的碎念吧...">
-                </div>
+                <div class="form-group"><label>備註</label><input type="text" id="txNote" class="form-control" placeholder="碎念..."></div>
                 <button type="submit" class="btn-submit">每筆花費都很重要！</button>
             </form>
         </div>
 
         <div id="panel-stock" class="form-card">
-            <div class="form-title"><span>⛵</span> 投資理財賺錢錢</div>
+            <div class="form-title"><span>⛵</span>投資理財賺錢錢</div>
             <form id="stockForm">
-                <div class="form-group">
-                    <label>交易日期</label>
-                    <input type="date" id="stockDate" class="form-control" required>
-                </div>
+                <div class="form-group"><label>交易日期</label><input type="date" id="stockDate" class="form-control" required></div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>股票代號</label>
-                        <input type="text" id="stockCode" class="form-control" placeholder="如: 2330" required>
-                    </div>
-                    <div class="form-group">
-                        <label>股票名稱</label>
-                        <input type="text" id="stockName" class="form-control" placeholder="如: 台積電" required>
-                    </div>
+                    <div class="form-group"><label>股票代號</label><input type="text" id="stockCode" class="form-control" required></div>
+                    <div class="form-group"><label>股票名稱</label><input type="text" id="stockName" class="form-control" required></div>
                 </div>
                 <div class="form-group">
                     <label>交易類型</label>
                     <select id="stockType" class="form-control">
                         <option value="現股買入">現股買入</option>
                         <option value="現股賣出">現股賣出</option>
-                        <option value="當沖買入">當沖買入</option>
-                        <option value="當沖賣出">當沖賣出</option>
                     </select>
                 </div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>股數</label>
-                        <input type="number" id="stockShares" class="form-control" placeholder="0" required>
-                    </div>
-                    <div class="form-group">
-                        <label>單價</label>
-                        <input type="number" id="stockPrice" class="form-control" step="0.01" placeholder="0.00" required>
-                    </div>
+                    <div class="form-group"><label>股數</label><input type="number" id="stockShares" class="form-control" required></div>
+                    <div class="form-group"><label>單價</label><input type="number" id="stockPrice" class="form-control" step="0.01" required></div>
                 </div>
-                <div class="form-group">
-                    <label>券商折讓 (如6折輸入 0.6)</label>
-                    <input type="number" id="stockDiscount" class="form-control" step="0.01" value="0.6">
-                </div>
+                <div class="form-group"><label>券商折讓</label><input type="number" id="stockDiscount" class="form-control" step="0.01" value="0.6"></div>
                 <button type="submit" class="btn-submit">確認此筆交易</button>
             </form>
         </div>
@@ -411,10 +266,7 @@
         <div id="panel-loan" class="form-card">
             <div class="form-title"><span>🤝</span> 借貸與代墊款</div>
             <form id="loanForm">
-                <div class="form-group">
-                    <label>日期</label>
-                    <input type="date" id="loanDate" class="form-control" required>
-                </div>
+                <div class="form-group"><label>日期</label><input type="date" id="loanDate" class="form-control" required></div>
                 <div class="form-group">
                     <label>類型</label>
                     <select id="loanType" class="form-control">
@@ -422,52 +274,32 @@
                         <option value="借入款項">借入 (我欠別人)</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>對象（旅伴人名）</label>
-                    <input type="text" id="loanTarget" class="form-control" placeholder="如: 夥伴名稱" required>
-                </div>
-                <div class="form-group">
-                    <label>金額</label>
-                    <input type="number" id="loanAmount" class="form-control" placeholder="0" required>
-                </div>
-                <div class="form-group">
-                    <label>撥款 / 收款帳戶</label>
-                    <select id="loanAccount" class="form-control account-select"></select>
-                </div>
-                <button type="submit" class="btn-submit">紀錄這段人情帳</button>
+                <div class="form-group"><label>對象</label><input type="text" id="loanTarget" class="form-control" required></div>
+                <div class="form-group"><label>金額</label><input type="number" id="loanAmount" class="form-control" required></div>
+                <div class="form-group"><label>撥款帳戶</label><select id="loanAccount" class="form-control account-select"></select></div>
+                <button type="submit" class="btn-submit">有借有還再借不難，人情債難還 ˎ₍•ʚ•₎ˏ</button>
             </form>
         </div>
 
     </div>
 
     <div class="bottom-nav">
-        <button class="nav-item active" onclick="switchNav('dashboard', this)">
-            <span class="nav-icon">🌊</span><span>總資產</span>
-        </button>
-        <button class="nav-item" onclick="switchNav('transaction', this)">
-            <span class="nav-icon">⛺</span><span>生活記帳</span>
-        </button>
-        <button class="nav-item" onclick="switchNav('stock', this)">
-            <span class="nav-icon">⛵</span><span>股票操盤</span>
-        </button>
-        <button class="nav-item" onclick="switchNav('loan', this)">
-            <span class="nav-icon">🤝</span><span>借貸追蹤</span>
-        </button>
+        <button class="nav-item active" onclick="switchNav('dashboard', this)"><span class="nav-icon">🌊</span><span>總資產</span></button>
+        <button class="nav-item" onclick="switchNav('transaction', this)"><span class="nav-icon">⛺</span><span>生活記帳</span></button>
+        <button class="nav-item" onclick="switchNav('stock', this)"><span class="nav-icon">⛵</span><span>股票操盤</span></button>
+        <button class="nav-item" onclick="switchNav('loan', this)"><span class="nav-icon">🤝</span><span>借貸追蹤</span></button>
     </div>
 
     <script>
         const GAS_API_URL = "https://script.google.com/macros/s/AKfycbygbG4FxYl4dQloJdMXRw-mxlWDtoAfhNc4h92jM3UlS9azOr88Ot3jTtuAEhKlCGOwnA/exec";
-        
-        // 密碼設定：預設是 1234
         const PRIVACY_PIN = "3693"; 
-        let isUnlocked = false; // 全域變數：目前是否已解鎖
+        let isUnlocked = false; 
 
         let globalRawData = { grandTotal: 0, sectorTotals: {} };
-        let globalCachedSectors = {
-            cash: [], traditional: [], digital: [], pure: [], epay: [], credit: [], prepaid: [], foreignCash: []
+        let globalGroupedCachedSectors = {
+            cash: [], traditional: {}, digital: {}, pure: {}, epay: {}, credit: {}, prepaid: {}, foreignCash: []
         };
 
-        // 隱私切換控制核心函式
         function togglePrivacy() {
             if (!isUnlocked) {
                 const userInput = prompt("🔒 請輸入驗證碼以解鎖金額顯示：");
@@ -475,14 +307,11 @@
                     isUnlocked = true;
                     document.getElementById("privacyBtn").textContent = "👁️ 多賺點錢好咪";
                     renderAllAmounts(); 
-                } else if (userInput !== null) {
-                    alert("❌ 驗證碼錯誤，無法解鎖資產資訊。");
-                }
+                } else if (userInput !== null) { alert("❌ 驗證碼錯誤。"); }
             } else {
                 isUnlocked = false;
                 document.getElementById("privacyBtn").textContent = "🔒 億萬小公主";
                 renderAllAmounts(); 
-                
                 if(document.getElementById('view-sector-detail').classList.contains('active')) {
                     const currentTitle = document.getElementById('detail-page-title').textContent;
                     let currentKey = "cash";
@@ -498,7 +327,6 @@
             }
         }
 
-        // 根據目前狀態決定渲染真實金額還是遮罩
         function renderAllAmounts() {
             document.getElementById("grand-total-display").textContent = isUnlocked ? globalRawData.grandTotal.toLocaleString('zh-TW') : "••••••";
             document.getElementById("cube-total-cash").textContent = isUnlocked ? (globalRawData.sectorTotals["現金現鈔"] || 0).toLocaleString('zh-TW') : "••••••";
@@ -511,19 +339,14 @@
             document.getElementById("cube-total-foreignCash").textContent = isUnlocked ? (globalRawData.sectorTotals["外幣現鈔"] || 0).toLocaleString('zh-TW') : "••••••";
         }
 
-        function switchNav(target, element) {
-            document.querySelectorAll('.form-card').forEach(card => card.classList.remove('active'));
-            document.querySelectorAll('.app-view').forEach(view => view.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            
-            element.classList.add('active');
-            
-            if (target === 'dashboard') {
-                document.getElementById('view-main-dashboard').classList.add('active');
+        function toggleDetailDrawer(drawerId) {
+            const list = document.getElementById("drawer-list-" + drawerId);
+            const arrow = document.getElementById("drawer-arrow-" + drawerId);
+            if (list.style.maxHeight === "0px" || !list.style.maxHeight) {
+                list.style.maxHeight = "400px"; arrow.style.transform = "rotate(90deg)"; 
             } else {
-                document.getElementById('panel-' + target).classList.add('active');
+                list.style.maxHeight = "0px"; arrow.style.transform = "rotate(0deg)"; 
             }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function navigateToDetail(sectorKey, pageTitle) {
@@ -533,23 +356,65 @@
             const root = document.getElementById('detail-cubes-root');
             root.innerHTML = "";
             
-            const targetedAccounts = globalCachedSectors[sectorKey] || [];
-            
-            if(targetedAccounts.length === 0) {
-                root.innerHTML = '<p style="color:#a0aec0; font-size:0.9rem; padding:20px; text-align:center; grid-column: span 2;">此大項目前無任何帳戶資料</p>';
-            } else {
-                targetedAccounts.forEach(acc => {
-                    const displayVal = isUnlocked ? acc.formattedBalance : "••••••";
-                    root.innerHTML += `
-                        <div class="detail-cube-item">
-                            <span class="detail-cube-title">${acc.name}</span>
-                            <span class="detail-cube-amount">
-                                ${displayVal}
-                                <small class="detail-cube-currency">(${acc.currency})</small>
-                            </span>
-                        </div>
-                    `;
-                });
+            const sourceData = globalGroupedCachedSectors[sectorKey];
+
+            if (sectorKey === 'cash' || sectorKey === 'foreignCash') {
+                const arr = sourceData || [];
+                if(arr.length === 0) {
+                    root.innerHTML = '<p style="color:#a0aec0; font-size:0.8rem; padding:20px; text-align:center; grid-column: span 2;">無紀錄</p>';
+                } else {
+                    arr.forEach(acc => {
+                        root.innerHTML += `
+                            <div class="detail-cube-item cash-style">
+                                <span class="detail-cube-title">${acc.name}</span>
+                                <span class="detail-cube-amount">${isUnlocked ? acc.formattedBalance : "••••••"} <small class="detail-cube-currency">(${acc.currency})</small></span>
+                            </div>`;
+                    });
+                }
+            } 
+            else {
+                const groupObj = sourceData || {};
+                const keys = Object.keys(groupObj);
+                
+                if(keys.length === 0) {
+                    root.innerHTML = '<p style="color:#a0aec0; font-size:0.8rem; padding:20px; text-align:center; grid-column: span 2;">無紀錄</p>';
+                } else {
+                    let idx = 0;
+                    for (const bankName in groupObj) {
+                        const bankPack = groupObj[bankName];
+                        const totalSumString = isUnlocked ? bankPack.bankTotal.toLocaleString('zh-TW') : "••••••";
+                        
+                        const itemWrapper = document.createElement("div");
+                        itemWrapper.className = "detail-cube-item";
+                        
+                        itemWrapper.innerHTML = `
+                            <div class="detail-cube-header" onclick="toggleDetailDrawer(${idx})">
+                                <span class="detail-cube-title">${bankName}</span>
+                                <div class="detail-cube-footer-row">
+                                    <span class="detail-cube-amount">${totalSumString}</span>
+                                    <span class="detail-cube-arrow" id="drawer-arrow-${idx}">▶</span>
+                                </div>
+                            </div>
+                        `;
+                        
+                        const subUl = document.createElement("ul");
+                        subUl.className = "detail-child-drawer";
+                        subUl.id = "drawer-list-" + idx;
+                        subUl.style.maxHeight = "0px";
+                        
+                        bankPack.subAccounts.forEach(sub => {
+                            subUl.innerHTML += `
+                                <li class="drawer-item">
+                                    <span class="drawer-acc-name">${sub.name}</span>
+                                    <span class="drawer-acc-val">${isUnlocked ? sub.val : "••••••"} <small style="font-size:0.6rem; font-weight:400; color:#a0aec0;">(${sub.currency})</small></span>
+                                </li>`;
+                        });
+                        
+                        itemWrapper.appendChild(subUl);
+                        root.appendChild(itemWrapper);
+                        idx++;
+                    }
+                }
             }
             
             document.getElementById('view-sector-detail').classList.add('active');
@@ -561,25 +426,26 @@
             document.getElementById('view-main-dashboard').classList.add('active');
         }
 
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('txDate').value = today;
-        document.getElementById('stockDate').value = today;
-        document.getElementById('loanDate').value = today;
+        function switchNav(target, element) {
+            document.querySelectorAll('.form-card').forEach(card => card.classList.remove('active'));
+            document.querySelectorAll('.app-view').forEach(view => view.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+            if (target === 'dashboard') { document.getElementById('view-main-dashboard').classList.add('active'); } 
+            else { document.getElementById('panel-' + target).classList.add('active'); }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            fetchAccounts();
-        });
+        document.addEventListener("DOMContentLoaded", () => { fetchAccounts(); });
 
         function fetchAccounts() {
             const selectElements = document.querySelectorAll(".account-select");
-
             fetch(GAS_API_URL)
                 .then(response => response.json())
                 .then(res => {
                     if (res.status === "success") {
                         const accounts = res.data;
-                        
-                        globalCachedSectors = { cash: [], traditional: [], digital: [], pure: [], epay: [], credit: [], prepaid: [], foreignCash: [] };
+                        globalGroupedCachedSectors = { cash: [], traditional: {}, digital: {}, pure: {}, epay: {}, credit: {}, prepaid: {}, foreignCash: [] };
                         
                         selectElements.forEach(select => {
                             select.innerHTML = select.id === "txAccountIn" ? '<option value="">-- 無 (非轉帳) --</option>' : '';
@@ -590,37 +456,42 @@
 
                         accounts.forEach(acc => {
                             selectElements.forEach(select => {
-                                const option = document.createElement("option");
-                                option.value = acc.name;
-                                option.textContent = `${acc.name} (${acc.currency})`;
-                                select.appendChild(option);
+                                const option = document.createElement("option"); option.value = acc.name;
+                                option.textContent = `${acc.name} (${acc.currency})`; select.appendChild(option);
                             });
 
                             const balanceNum = Number(acc.balance) || 0;
-                            const formattedVal = typeof acc.balance === "number" ? acc.balance.toLocaleString('zh-TW') : balanceNum.toLocaleString('zh-TW');
+                            const formattedVal = balanceNum.toLocaleString('zh-TW');
                             const sheetType = acc.type ? acc.type.trim() : "實體銀行";
+                            const excelBankName = acc.bank ? acc.bank.trim() : "其它";
 
                             grandTotalTWD += balanceNum; 
-
-                            if (sectorTotals.hasOwnProperty(sheetType)) {
-                                sectorTotals[sheetType] += balanceNum;
-                            }
+                            if (sectorTotals.hasOwnProperty(sheetType)) { sectorTotals[sheetType] += balanceNum; }
 
                             const accPack = { name: acc.name, formattedBalance: formattedVal, currency: acc.currency };
                             
-                            if (sheetType === "現金現鈔") globalCachedSectors.cash.push(accPack);
-                            else if (sheetType === "實體銀行") globalCachedSectors.traditional.push(accPack);
-                            else if (sheetType === "數位銀行") globalCachedSectors.digital.push(accPack);
-                            else if (sheetType === "純網銀") globalCachedSectors.pure.push(accPack);
-                            else if (sheetType === "電子支付") globalCachedSectors.epay.push(accPack);
-                            else if (sheetType === "信用卡") globalCachedSectors.credit.push(accPack);
-                            else if (sheetType === "儲值卡") globalCachedSectors.prepaid.push(accPack);
-                            else if (sheetType === "外幣現鈔") globalCachedSectors.foreignCash.push(accPack);
+                            if (sheetType === "現金現鈔") {
+                                globalGroupedCachedSectors.cash.push(accPack);
+                            } else if (sheetType === "外幣現鈔") {
+                                globalGroupedCachedSectors.foreignCash.push(accPack);
+                            } else {
+                                let cacheTargetObj = globalGroupedCachedSectors.traditional;
+                                if (sheetType === "數位銀行") cacheTargetObj = globalGroupedCachedSectors.digital;
+                                else if (sheetType === "純網銀") cacheTargetObj = globalGroupedCachedSectors.pure;
+                                else if (sheetType === "電子支付") cacheTargetObj = globalGroupedCachedSectors.epay;
+                                else if (sheetType === "信用卡") cacheTargetObj = globalGroupedCachedSectors.credit;
+                                else if (sheetType === "儲值卡") cacheTargetObj = globalGroupedCachedSectors.prepaid;
+
+                                if (!cacheTargetObj[excelBankName]) {
+                                    cacheTargetObj[excelBankName] = { bankTotal: 0, subAccounts: [] };
+                                }
+                                cacheTargetObj[excelBankName].bankTotal += balanceNum;
+                                cacheTargetObj[excelBankName].subAccounts.push({ name: acc.name, val: formattedVal, currency: acc.currency });
+                            }
                         });
 
                         globalRawData.grandTotal = grandTotalTWD;
                         globalRawData.sectorTotals = sectorTotals;
-
                         renderAllAmounts();
                     }
                 })
@@ -632,64 +503,41 @@
                 e.preventDefault();
                 const submitBtn = this.querySelector(".btn-submit");
                 const originalText = submitBtn.textContent;
-                submitBtn.textContent = "正在將資料送往彼岸... ⛵";
-                submitBtn.disabled = true;
-
+                submitBtn.textContent = "再花錢剁手手... ⛵"; submitBtn.disabled = true;
                 const payload = { action: actionType, data: getFormDataFunc() };
-
                 fetch(GAS_API_URL, { method: "POST", body: JSON.stringify(payload) })
                 .then(response => response.json())
                 .then(res => {
                     if (res.status === "success") {
-                        alert("✨ 紀錄成功！資料已穩穩寫入您的雲端試算表。");
-                        this.reset();
-                        const todayStr = new Date().toISOString().split('T')[0];
-                        const dateInput = this.querySelector("input[type='date']");
-                        if(dateInput) dateInput.value = todayStr;
-                        
-                        fetchAccounts();
-                        document.querySelectorAll('.nav-item')[0].click();
+                        alert("✨ 紀錄成功！資料已穩穩寫入您的雲端試算表。"); this.reset();
+                        fetchAccounts(); switchNav('dashboard', document.querySelectorAll('.nav-item')[0]);
                     } else { alert("❌ 寫入失敗: " + res.message); }
                 })
-                .catch(err => { alert("❌ 網路發生錯誤。"); console.error(err); })
+                .catch(err => { alert("❌ 網路發生錯誤。"); })
                 .finally(() => { submitBtn.textContent = originalText; submitBtn.disabled = false; });
             });
         }
 
         handleFormSubmit("txForm", "addTransaction", () => {
             return {
-                date: document.getElementById("txDate").value,
-                type: document.getElementById("txType").value,
-                accountOut: document.getElementById("txAccountOut").value,
-                accountIn: document.getElementById("txAccountIn").value,
-                amount: Number(document.getElementById("txAmount").value),
-                currency: document.getElementById("txCurrency").value,
-                mainCategory: document.getElementById("txMainCat").value,
-                subCategory: document.getElementById("txSubCat").value,
-                project: "",
-                note: document.getElementById("txNote").value
+                date: document.getElementById("txDate").value, type: document.getElementById("txType").value,
+                accountOut: document.getElementById("txAccountOut").value, accountIn: document.getElementById("txAccountIn").value,
+                amount: Number(document.getElementById("txAmount").value), currency: document.getElementById("txCurrency").value,
+                mainCategory: document.getElementById("txMainCat").value, subCategory: document.getElementById("txSubCat").value,
+                project: "", note: document.getElementById("txNote").value
             };
         });
-
         handleFormSubmit("stockForm", "addStock", () => {
             return {
-                date: document.getElementById("stockDate").value,
-                stockCode: document.getElementById("stockCode").value,
-                stockName: document.getElementById("stockName").value,
-                type: document.getElementById("stockType").value,
-                shares: Number(document.getElementById("stockShares").value),
-                price: Number(document.getElementById("stockPrice").value),
-                discount: Number(document.getElementById("stockDiscount").value)
+                date: document.getElementById("stockDate").value, stockCode: document.getElementById("stockCode").value,
+                stockName: document.getElementById("stockName").value, type: document.getElementById("stockType").value,
+                shares: Number(document.getElementById("stockShares").value), price: Number(document.getElementById("stockPrice").value), discount: Number(document.getElementById("stockDiscount").value)
             };
         });
-
         handleFormSubmit("loanForm", "addLoan", () => {
             return {
-                date: document.getElementById("loanDate").value,
-                type: document.getElementById("loanType").value,
-                target: document.getElementById("loanTarget").value,
-                amount: Number(document.getElementById("loanAmount").value),
-                account: document.getElementById("loanAccount").value
+                date: document.getElementById("loanDate").value, type: document.getElementById("loanType").value,
+                target: document.getElementById("loanTarget").value, amount: Number(document.getElementById("loanAmount").value), account: document.getElementById("loanAccount").value
             };
         });
     </script>
