@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <title>Zhian's 💰</title>
+    
     <meta property="og:title" content="Zhian's 🫧 ⭐️ 🪞">
+    
     <meta property="og:description" content="認真賺錢，謹慎花錢，多多存錢，快樂玩耍！☀️∞">
     
     <link rel="apple-touch-icon" href="https://img.icons8.com/papercut/180/000000/sparkling-diamond.png?v=3">
@@ -24,6 +26,7 @@
             --text-muted: #7f8c8d;
         }
         
+        /* 核心：精準指定蘋果內建的翩翩體官方名稱 "HanziPen TC" */
         * { 
             box-sizing: border-box; 
             margin: 0; 
@@ -38,6 +41,7 @@
         header p { font-size: 0.78rem; font-weight: 300; opacity: 0.85; letter-spacing: 0.5px; }
         .container { max-width: 600px; margin: 0 auto; padding: 12px 14px; }
         
+        /* 總資產面板 */
         .balance-card { 
             background: var(--foam-white); border-radius: 14px; padding: 12px 15px; margin-bottom: 16px; 
             box-shadow: 0 4px 15px var(--sea-shadow); border: 1px solid rgba(26, 95, 122, 0.04);
@@ -222,9 +226,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>細項 (自動連動項目)</label>
-                        <select id="txDetailCat" class="form-control">
-                            </select>
+                        <label>細項 (連動選單)</label>
+                        <select id="txDetailCat" class="form-control"></select>
                     </div>
                 </div>
                 
@@ -235,7 +238,7 @@
         </div>
 
         <div id="panel-stock" class="form-card">
-            <div class="form-title"><span>⛵</span>投資理財賺錢錢</div>
+            <div class="form-title"><span>⛵</span> 投資理財賺錢錢</div>
             <form id="stockForm">
                 <div class="form-row">
                     <div class="form-group"><label>交易日期</label><input type="date" id="stockDate" class="form-control" required></div>
@@ -243,7 +246,7 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group"><label>股票代號</label><input type="text" id="stockCode" class="form-control" placeholder="如: 1802" required></div>
-                    <div class="form-group"><label>股票名稱</label><input type="text" id="stockName" class="form-control" placeholder="如: 台玻" required></div>
+                    <div class="form-group"><label>股票名稱 <small style="color:#b2bec3;">(可在Excel用公式自動帶出)</small></label><input type="text" id="stockName" class="form-control" placeholder="如: 台玻" required></div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
@@ -297,17 +300,30 @@
             <div class="form-title"><span>🤝</span> 借貸與代墊款</div>
             <form id="loanForm">
                 <div class="form-group"><label>日期</label><input type="date" id="loanDate" class="form-control" required></div>
+                
                 <div class="form-group">
-                    <label>類型</label>
-                    <select id="loanType" class="form-control">
-                        <option value="借出款項">借出 (別人欠我)</option>
-                        <option value="借入款項">借入 (我欠別人)</option>
+                    <label>借貸動作</label>
+                    <select id="loanType" class="form-control" onchange="updateLoanAccountLabel()">
+                        <option value="代墊/借出">代墊 / 借出 (我幫墊錢或拿錢給人)</option>
+                        <option value="收到還款">收到還款 (別人把錢還我了！)</option>
+                        <option value="借入款項">借入款項 (我跟別人借錢/欠人錢)</option>
+                        <option value="我還人款">我還人款 (我把錢還給債主)</option>
                     </select>
                 </div>
-                <div class="form-group"><label>對象</label><input type="text" id="loanTarget" class="form-control" required></div>
-                <div class="form-group"><label>金額</label><input type="number" id="loanAmount" class="form-control" required></div>
-                <div class="form-group"><label>撥款帳戶</label><select id="loanAccount" class="form-control account-select"></select></div>
-                <button type="submit" class="btn-submit">有借有還再借不難，人情債難還 ˎ₍•ʚ•₎ˏ</button>
+                
+                <div class="form-row">
+                    <div class="form-group"><label>對象 (誰)</label><input type="text" id="loanTarget" class="form-control" placeholder="如: 吉米" required></div>
+                    <div class="form-group"><label>金額</label><input type="number" id="loanAmount" class="form-control" placeholder="0" required min="1"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label id="lbl-loan-account">💸 支付/借出帳戶 (你用什麼幫他墊錢，如：國泰信用卡)</label>
+                    <select id="loanAccount" class="form-control account-select"></select>
+                </div>
+                
+                <div class="form-group"><label>備註/細節</label><input type="text" id="loanNote" class="form-control" placeholder="如: 幫墊午餐 137 / 飲料錢"></div>
+                
+                <button type="submit" class="btn-submit">確認記錄 🌊</button>
             </form>
         </div>
 
@@ -330,7 +346,6 @@
             cash: [], traditional: {}, digital: {}, pure: {}, epay: {}, credit: {}, prepaid: {}, foreignCash: []
         };
 
-        // 🧠 定義子類別與細項的動態對應表
         const detailMapping = {
             "食": ["早餐", "午餐", "晚餐", "飲料點心", "食材超市", "其他大餐"],
             "衣": ["服飾治裝", "鞋包配件", "隱形眼鏡/美妝", "洗衣服/保養"],
@@ -344,6 +359,7 @@
         function updateDetailOptions() {
             const subCatVal = document.getElementById("txSubCat").value;
             const detailSelect = document.getElementById("txDetailCat");
+            if (!detailSelect) return;
             detailSelect.innerHTML = "";
             
             const options = detailMapping[subCatVal] || ["一般細項"];
@@ -353,6 +369,22 @@
                 o.textContent = opt;
                 detailSelect.appendChild(o);
             });
+        }
+
+        // 💡 智慧型借貸水庫標籤動態變換
+        function updateLoanAccountLabel() {
+            const type = document.getElementById("loanType").value;
+            const lbl = document.getElementById("lbl-loan-account");
+            
+            if (type === "代墊/借出") {
+                lbl.textContent = "💸 支付/借出帳戶 (你用什麼幫他墊錢，如：國泰信用卡)";
+            } else if (type === "收到還款") {
+                lbl.textContent = "💰 存入/收款帳戶 (他還你錢要存去哪，如：LINE Pay Money)";
+            } else if (type === "借入款項") {
+                lbl.textContent = "💰 拿到的現金/存入帳戶 (錢借進來放哪)";
+            } else if (type === "我還人款") {
+                lbl.textContent = "💸 支付/還款帳戶 (你拿什麼帳戶去還別人錢)";
+            }
         }
 
         function togglePrivacy() {
@@ -492,9 +524,10 @@
             document.getElementById('stockDate').value = today;
             document.getElementById('stockPayDate').value = today; 
             document.getElementById('loanDate').value = today;
-            updateDetailOptions(); // 初始化細項選單
+            updateDetailOptions();
             updateBrokerDiscount(); 
             fetchAccounts(); 
+            setupFormSubmissions();
         });
 
         function fetchAccounts() {
@@ -550,52 +583,113 @@
                 .catch(err => console.error("Error:", err));
         }
 
-        function handleFormSubmit(formId, actionType, getFormDataFunc) {
-            document.getElementById(formId).addEventListener("submit", function(e) {
+        function setupFormSubmissions() {
+            // 表單一：日常記帳
+            document.getElementById("txForm").addEventListener("submit", function(e) {
                 e.preventDefault();
                 const submitBtn = this.querySelector(".btn-submit");
                 const originalText = submitBtn.textContent;
-                submitBtn.textContent = "資料拋向浪潮中... ⛵"; submitBtn.disabled = true;
-                const payload = { action: actionType, data: getFormDataFunc() };
-                fetch(GAS_API_URL, { method: "POST", body: JSON.stringify(payload) })
-                .then(response => response.json())
-                .then(res => {
-                    if (res.status === "success") {
-                        alert("✨ 紀錄成功！資料已穩穩寫入您的雲端試算表。"); this.reset();
-                        const d = new Date().toISOString().split('T')[0];
-                        document.getElementById('txDate').value = d;
-                        document.getElementById('stockDate').value = d;
-                        document.getElementById('stockPayDate').value = d;
-                        document.getElementById('loanDate').value = d;
-                        updateDetailOptions();
-                        updateBrokerDiscount();
-                        fetchAccounts(); switchNav('dashboard', document.querySelectorAll('.nav-item')[0]);
-                    } else { alert("❌ 寫入失敗: " + res.message); }
-                })
-                .catch(err => { alert("❌ 網路發生錯誤。"); })
-                .finally(() => { submitBtn.textContent = originalText; submitBtn.disabled = false; });
+                submitBtn.textContent = "乖寶寶有記帳👶🏻... 🫶🏻"; submitBtn.disabled = true;
+
+                const subCat = document.getElementById("txSubCat").value;
+                const detailCat = document.getElementById("txDetailCat").value;
+
+                const payload = {
+                    action: "addTransaction",
+                    data: {
+                        date: document.getElementById("txDate").value,
+                        type: document.getElementById("txType").value,
+                        accountOut: document.getElementById("txAccountOut").value,
+                        accountIn: document.getElementById("txAccountIn").value,
+                        amount: Number(document.getElementById("txAmount").value),
+                        currency: document.getElementById("txCurrency").value,
+                        mainCategory: document.getElementById("txMainCat").value,
+                        subCategory: `${subCat}-${detailCat}`, 
+                        project: document.getElementById("txProject").value, 
+                        note: document.getElementById("txNote").value
+                    }
+                };
+                sendData(payload, this, originalText, submitBtn);
+            });
+
+            // 表單二：股票交易
+            document.getElementById("stockForm").addEventListener("submit", function(e) {
+                e.preventDefault();
+                const submitBtn = this.querySelector(".btn-submit");
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = "乖寶寶有記帳👶🏻... 🫶🏻"; submitBtn.disabled = true;
+
+                const totalRaw = Number(document.getElementById("stockTotalRaw").value) || 0;
+                const fee = Number(document.getElementById("stockFee").value) || 0;
+                const tax = Number(document.getElementById("stockTax").value) || 0;
+                const type = document.getElementById("stockType").value;
+                const netAmount = (type === "現股買入") ? (totalRaw + fee) : (totalRaw - fee - tax);
+
+                const payload = {
+                    action: "addStock",
+                    data: {
+                        date: document.getElementById("stockDate").value,
+                        payDate: document.getElementById("stockPayDate").value,
+                        stockCode: document.getElementById("stockCode").value,
+                        stockName: document.getElementById("stockName").value,
+                        type: type,
+                        shares: Number(document.getElementById("stockShares").value),
+                        price: Number(document.getElementById("stockPrice").value),
+                        discount: Number(document.getElementById("stockDiscount").value),
+                        totalRaw: totalRaw,
+                        fee: fee,
+                        tax: tax,
+                        netAmount: netAmount,
+                        broker: document.getElementById("stockBroker").value
+                    }
+                };
+                sendData(payload, this, originalText, submitBtn);
+            });
+
+            // 表單三：借貸追蹤
+            document.getElementById("loanForm").addEventListener("submit", function(e) {
+                e.preventDefault();
+                const submitBtn = this.querySelector(".btn-submit");
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = "乖寶寶有記帳👶🏻... 🫶🏻"; submitBtn.disabled = true;
+
+                const payload = {
+                    action: "addLoan",
+                    data: {
+                        date: document.getElementById("loanDate").value, 
+                        type: document.getElementById("loanType").value,
+                        target: document.getElementById("loanTarget").value, 
+                        amount: Number(document.getElementById("loanAmount").value), 
+                        account: document.getElementById("loanAccount").value,
+                        note: document.getElementById("loanNote").value
+                    }
+                };
+                sendData(payload, this, originalText, submitBtn);
             });
         }
 
-        handleFormSubmit("txForm", "addTransaction", () => {
-            const subCat = document.getElementById("txSubCat").value;
-            const detailCat = document.getElementById("txDetailCat").value;
-            // 💡 方案 A：自動將「子類別」與「細項」組合成「子類別-細項」寫入 Excel 欄位
-            const combinedSubCategory = `${subCat}-${detailCat}`;
-
-            return {
-                date: document.getElementById("txDate").value,
-                type: document.getElementById("txType").value,
-                accountOut: document.getElementById("txAccountOut").value,
-                accountIn: document.getElementById("txAccountIn").value,
-                amount: Number(document.getElementById("txAmount").value),
-                currency: document.getElementById("txCurrency").value,
-                mainCategory: document.getElementById("txMainCat").value,
-                subCategory: combinedSubCategory, // 送出組合後的結果
-                project: document.getElementById("txProject").value, 
-                note: document.getElementById("txNote").value
-            };
-        });
+        function sendData(payload, formEl, originalText, submitBtn) {
+            fetch(GAS_API_URL, { method: "POST", body: JSON.stringify(payload) })
+            .then(response => response.json())
+            .then(res => {
+                if (res.status === "success") {
+                    alert("✨ 紀錄成功！繼續加油！"); 
+                    formEl.reset();
+                    const d = new Date().toISOString().split('T')[0];
+                    document.getElementById('txDate').value = d;
+                    document.getElementById('stockDate').value = d;
+                    document.getElementById('stockPayDate').value = d;
+                    document.getElementById('loanDate').value = d;
+                    updateDetailOptions();
+                    updateBrokerDiscount();
+                    updateLoanAccountLabel(); // 重設借貸水庫標籤
+                    fetchAccounts(); 
+                    switchNav('dashboard', document.querySelectorAll('.nav-item')[0]);
+                } else { alert("❌ 寫入失敗: " + res.message); }
+            })
+            .catch(err => { alert("❌ 網路發生錯誤。"); })
+            .finally(() => { submitBtn.textContent = originalText; submitBtn.disabled = false; });
+        }
 
         function updateBrokerDiscount() {
             const broker = document.getElementById("stockBroker").value;
@@ -633,37 +727,6 @@
             const netAmount = (type === "現股買入") ? (totalRaw + fee) : (totalRaw - fee - tax);
             document.getElementById("lbl-net").textContent = netAmount.toLocaleString('zh-TW');
         }
-
-        handleFormSubmit("stockForm", "addStock", () => {
-            const totalRaw = Number(document.getElementById("stockTotalRaw").value) || 0;
-            const fee = Number(document.getElementById("stockFee").value) || 0;
-            const tax = Number(document.getElementById("stockTax").value) || 0;
-            const type = document.getElementById("stockType").value;
-            const netAmount = (type === "現股買入") ? (totalRaw + fee) : (totalRaw - fee - tax);
-
-            return {
-                date: document.getElementById("stockDate").value,
-                payDate: document.getElementById("stockPayDate").value,
-                stockCode: document.getElementById("stockCode").value,
-                stockName: document.getElementById("stockName").value,
-                type: type,
-                shares: Number(document.getElementById("stockShares").value),
-                price: Number(document.getElementById("stockPrice").value),
-                discount: Number(document.getElementById("stockDiscount").value),
-                totalRaw: totalRaw,
-                fee: fee,
-                tax: tax,
-                netAmount: netAmount,
-                broker: document.getElementById("stockBroker").value
-            };
-        });
-
-        handleFormSubmit("loanForm", "addLoan", () => {
-            return {
-                date: document.getElementById("loanDate").value, type: document.getElementById("loanType").value,
-                target: document.getElementById("loanTarget").value, amount: Number(document.getElementById("loanAmount").value), account: document.getElementById("loanAccount").value
-            };
-        });
     </script>
 </body>
 </html>
