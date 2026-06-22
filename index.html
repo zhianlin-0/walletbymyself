@@ -501,13 +501,13 @@
                 e.preventDefault();
                 const submitBtn = this.querySelector(".btn-submit");
                 const originalText = submitBtn.textContent;
-                submitBtn.textContent = "資料拋向浪潮中... ⛵"; submitBtn.disabled = true;
+                submitBtn.textContent = "認真記帳乖👶🏻... 🫶🏻"; submitBtn.disabled = true;
                 const payload = { action: actionType, data: getFormDataFunc() };
                 fetch(GAS_API_URL, { method: "POST", body: JSON.stringify(payload) })
                 .then(response => response.json())
                 .then(res => {
                     if (res.status === "success") {
-                        alert("✨ 紀錄成功！資料已穩穩寫入您的雲端試算表。"); this.reset();
+                        alert("✨ 紀錄成功！棒棒👍🏻。"); this.reset();
                         const d = new Date().toISOString().split('T')[0];
                         document.getElementById('txDate').value = d;
                         document.getElementById('stockDate').value = d;
@@ -515,7 +515,7 @@
                         document.getElementById('loanDate').value = d;
                         updateBrokerDiscount();
                         fetchAccounts(); switchNav('dashboard', document.querySelectorAll('.nav-item')[0]);
-                    } else { alert("❌ 寫入失敗: " + res.message); }
+                    } else { alert("❌ 失敗: " + res.message); }
                 })
                 .catch(err => { alert("❌ 網路發生錯誤。"); })
                 .finally(() => { submitBtn.textContent = originalText; submitBtn.disabled = false; });
