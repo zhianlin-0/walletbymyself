@@ -4,22 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- 💡 1. 變更瀏覽器頁籤的標題 -->
     <title>Zhian's 💰</title>
-    
-    <!-- 💡 2. 強制變更 LINE 分享時的主標題 -->
     <meta property="og:title" content="Zhian's 🫧 ⭐️ 🪞">
-    
-    <!-- 💡 3. 強制變更 LINE 分享時的副標題描述 -->
     <meta property="og:description" content="認真賺錢，謹慎花錢，多多存錢，快樂玩耍！☀️∞">
     
-    <!-- 💡 換上符合你文青海洋藍模式的「閃耀金錢羅盤」圖標 -->
     <link rel="apple-touch-icon" href="https://img.icons8.com/papercut/180/000000/sparkling-diamond.png?v=3">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <!-- 字體靈魂升級：引入 Google 全球中文字體支援，確保不論手機或 Mac 電腦都能完美渲染流暢手寫感 -->
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Liu+Jian+Mao+Cao&family=Noto+Sans+TC:wght@400;700&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-ocean: #1a5f7a;
@@ -31,12 +22,11 @@
             --text-muted: #7f8c8d;
         }
         
-        /* 核心修正：字體順序優化，iPhone 自動抓翩翩體，Mac或其它平台則自動套用流暢的 Google 手寫字魂 (Ma Shan Zheng / Liu Jian Mao Cao) */
         * { 
             box-sizing: border-box; 
             margin: 0; 
             padding: 0; 
-            font-family: "HanziPen TC", "翩翩體-繁", "Ma Shan Zheng", "Liu Jian Mao Cao", "Caveat", "Chalkboard SE", 'Noto Sans TC', sans-serif;
+            font-family: "HanziPen TC", "翩翩體-繁", "Liu Jian Mao Cao", "Caveat", "Chalkboard SE", 'Noto Sans TC', sans-serif;
             -webkit-tap-highlight-color: transparent; 
         }
         
@@ -179,7 +169,6 @@
             <div class="sub-details-grid" id="detail-cubes-root"></div>
         </div>
 
-        <!-- 生活記帳 -->
         <div id="panel-transaction" class="form-card">
             <div class="form-title"><span>🏠</span> 日常生活記帳</div>
             <form id="txForm">
@@ -214,7 +203,6 @@
             </form>
         </div>
 
-        <!-- 股票交易 -->
         <div id="panel-stock" class="form-card">
             <div class="form-title"><span>⛵</span>投資理財賺錢錢</div>
             <form id="stockForm">
@@ -257,6 +245,7 @@
                         <input type="number" id="stockTotalRaw" class="form-control" readonly style="background-color: #f1f5f9; color: #94a3b8;">
                     </div>
                 </div>
+
                 <div class="form-row">
                     <div class="form-group">
                         <label>手續費 (J欄，可手動修改)</label>
@@ -267,14 +256,15 @@
                         <input type="number" id="stockTax" class="form-control" required oninput="manualOverrideStockNet()">
                     </div>
                 </div>
+                
                 <div style="background-color: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 12px; font-size: 0.75rem; color: #7f8c8d; line-height: 1.5; text-align: center;">
                     <div style="font-weight: 700; color: var(--primary-ocean); font-size: 0.85rem;">🌊 淨收付總金額 (L欄)：NT$ <span id="lbl-net">0</span></div>
                 </div>
+
                 <button type="submit" class="btn-submit">確認此筆交易</button>
             </form>
         </div>
 
-        <!-- 借貸追蹤 -->
         <div id="panel-loan" class="form-card">
             <div class="form-title"><span>🤝</span> 借貸與代墊款</div>
             <form id="loanForm">
@@ -511,13 +501,13 @@
                 e.preventDefault();
                 const submitBtn = this.querySelector(".btn-submit");
                 const originalText = submitBtn.textContent;
-                submitBtn.textContent = "資料拋向浪潮中... ⛵"; submitBtn.disabled = true;
+                submitBtn.textContent = "認真記帳乖👶🏻... 🫶🏻"; submitBtn.disabled = true;
                 const payload = { action: actionType, data: getFormDataFunc() };
                 fetch(GAS_API_URL, { method: "POST", body: JSON.stringify(payload) })
                 .then(response => response.json())
                 .then(res => {
                     if (res.status === "success") {
-                        alert("✨ 紀錄成功！資料已穩穩寫入您的雲端試算表。"); this.reset();
+                        alert("✨ 紀錄成功！棒棒👍🏻。"); this.reset();
                         const d = new Date().toISOString().split('T')[0];
                         document.getElementById('txDate').value = d;
                         document.getElementById('stockDate').value = d;
@@ -525,7 +515,7 @@
                         document.getElementById('loanDate').value = d;
                         updateBrokerDiscount();
                         fetchAccounts(); switchNav('dashboard', document.querySelectorAll('.nav-item')[0]);
-                    } else { alert("❌ 寫入失敗: " + res.message); }
+                    } else { alert("❌ 失敗: " + res.message); }
                 })
                 .catch(err => { alert("❌ 網路發生錯誤。"); })
                 .finally(() => { submitBtn.textContent = originalText; submitBtn.disabled = false; });
@@ -550,6 +540,7 @@
             calcStockValues();
         }
 
+        // 💡 智慧計算核心：預設全套手續費與證交稅公式
         function calcStockValues() {
             const shares = Number(document.getElementById("stockShares").value) || 0;
             const price = Number(document.getElementById("stockPrice").value) || 0;
@@ -566,9 +557,10 @@
             const tax = (type === "現股賣出") ? Math.round(totalRaw * 0.003) : 0;
             document.getElementById("stockTax").value = tax;
 
-            manualOverrideStockNet();
+            manualOverrideStockNet(); // 計算最終總計
         }
 
+        // 💡 允許覆蓋核心：當手動去修改手續費、證交稅格子時，即時更新最終淨收付金額
         function manualOverrideStockNet() {
             const totalRaw = Number(document.getElementById("stockTotalRaw").value) || 0;
             const fee = Number(document.getElementById("stockFee").value) || 0;
