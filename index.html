@@ -4,17 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- 💡 1. 變更瀏覽器頁籤的標題 -->
     <title>Zhian's 💰</title>
-    
-    <!-- 💡 2. 強制變更 LINE 分享時的主標題 -->
     <meta property="og:title" content="Zhian's 🫧 ⭐️ 🪞">
-    
-    <!-- 💡 3. 強制變更 LINE 分享時的副標題描述（改成低調文青風，保護隱私） -->
     <meta property="og:description" content="認真賺錢，謹慎花錢，多多存錢，快樂玩耍！☀️∞">
     
-    <!-- 💡 核心改動：換上最符合你文青海洋藍模式的「閃耀金錢羅盤」圖標，並在連結尾端強制加上 ?v=2 擊碎快取 -->
-    <link rel="apple-touch-icon" href="https://img.icons8.com/papercut/180/000000/sparkling-diamond.png?v=2">
+    <link rel="apple-touch-icon" href="https://img.icons8.com/papercut/180/000000/sparkling-diamond.png?v=3">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
@@ -28,7 +22,6 @@
             --text-muted: #7f8c8d;
         }
         
-        /* 核心：精準指定蘋果內建的翩翩體官方名稱 "HanziPen TC" */
         * { 
             box-sizing: border-box; 
             margin: 0; 
@@ -38,14 +31,11 @@
         }
         
         body { background-color: var(--sand-beach); color: var(--text-dark); padding-bottom: 70px; overflow-x: hidden; }
-        
         header { background: linear-gradient(135deg, var(--primary-ocean), #2d8bb1); color: var(--foam-white); padding: 18px 15px; text-align: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; box-shadow: 0 4px 12px var(--sea-shadow); position: relative; }
         header h1 { font-size: 1.35rem; font-weight: 700; letter-spacing: 1.5px; margin-bottom: 3px; }
         header p { font-size: 0.78rem; font-weight: 300; opacity: 0.85; letter-spacing: 0.5px; }
-        
         .container { max-width: 600px; margin: 0 auto; padding: 12px 14px; }
         
-        /* 總資產面板 */
         .balance-card { 
             background: var(--foam-white); border-radius: 14px; padding: 12px 15px; margin-bottom: 16px; 
             box-shadow: 0 4px 15px var(--sea-shadow); border: 1px solid rgba(26, 95, 122, 0.04);
@@ -64,16 +54,13 @@
         .app-view { display: none; }
         .app-view.active { display: block; animation: slideIn 0.3s ease-out; }
 
-        /* 首頁 8 大項目方塊網格 */
         .main-sector-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 8px; }
-
         .sector-cube-btn {
             background: var(--foam-white); border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 12px;
             display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start;
             min-height: 85px; cursor: pointer; box-shadow: 0 3px 8px rgba(34, 111, 141, 0.03); transition: all 0.2s ease;
         }
         .sector-cube-btn:active { transform: scale(0.97); background-color: #f8fafc; }
-        
         .cube-icon-title { display: flex; flex-direction: column; gap: 3px; }
         .cube-icon { font-size: 1.15rem; }
         .cube-title { font-size: 0.82rem; font-weight: 700; color: var(--text-dark); }
@@ -81,51 +68,32 @@
         .cube-amount { font-size: 0.95rem; font-weight: 700; color: var(--primary-ocean); }
         .cube-arrow { font-size: 0.65rem; color: var(--text-muted); }
 
-        /* 子頁面返回列 */
         .back-bar {
             display: flex; align-items: center; gap: 6px; padding: 10px 12px; background: #ffffff;
             border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 14px; cursor: pointer;
             font-size: 0.85rem; font-weight: 700; color: var(--primary-ocean);
         }
         .back-bar:active { background-color: #f1f5f9; }
-
-        /* 子頁面內部細項方塊網格 */
         .sub-details-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 
-        /* 細項內部同銀行聚合方塊卡片結構 */
         .detail-cube-item {
             background: var(--foam-white); border-radius: 12px; border: 1px solid #edf2f7;
             display: flex; flex-direction: column; justify-content: space-between; min-height: 75px;
             box-shadow: 0 3px 8px rgba(0,0,0,0.01); overflow: hidden; grid-column: span 1;
         }
         .detail-cube-item.cash-style { justify-content: space-between; padding: 10px 12px; }
-
-        .detail-cube-header {
-            padding: 10px 12px; cursor: pointer; display: flex; flex-direction: column;
-            justify-content: space-between; min-height: 75px; width: 100%; position: relative;
-        }
+        .detail-cube-header { padding: 10px 12px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; min-height: 75px; width: 100%; position: relative; }
         .detail-cube-title { font-size: 0.78rem; font-weight: 700; color: var(--text-dark); line-height: 1.2; }
-        
-        .detail-cube-footer-row {
-            display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: auto;
-        }
+        .detail-cube-footer-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: auto; }
         .detail-cube-amount { font-size: 0.92rem; font-weight: 700; color: var(--primary-ocean); }
         .detail-cube-arrow { font-size: 0.6rem; color: var(--text-muted); transition: transform 0.2s ease; }
 
-        /* 抽屜展開後的明細列表 */
-        .detail-child-drawer {
-            list-style: none; padding: 0; max-height: 0; overflow: hidden;
-            transition: max-height 0.25s ease-out; background-color: #f8fafc; border-top: 1px dashed #edf2f7;
-        }
-        .drawer-item {
-            display: flex; flex-direction: column; align-items: flex-start;
-            padding: 6px 12px; gap: 1px; border-bottom: 1px solid #ffffff;
-        }
+        .detail-child-drawer { list-style: none; padding: 0; max-height: 0; overflow: hidden; transition: max-height 0.25s ease-out; background-color: #f8fafc; border-top: 1px dashed #edf2f7; }
+        .drawer-item { display: flex; flex-direction: column; align-items: flex-start; padding: 6px 12px; gap: 1px; border-bottom: 1px solid #ffffff; }
         .drawer-item:last-child { border-bottom: none; }
         .drawer-acc-name { color: #718093; font-size: 0.7rem; line-height: 1.2; word-break: break-all; }
         .drawer-acc-val { font-weight: 600; color: #2d8bb1; font-size: 0.76rem; }
 
-        /* 記帳表單卡片 */
         .form-card { background: var(--foam-white); border-radius: 14px; padding: 16px 18px; box-shadow: 0 6px 16px var(--sea-shadow); border: 1px solid rgba(26, 95, 122, 0.04); display: none; }
         .form-card.active { display: block; animation: fadeIn 0.3s ease; }
         .form-title { font-size: 1.05rem; color: var(--primary-ocean); margin-bottom: 14px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
@@ -135,7 +103,6 @@
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .btn-submit { width: 100%; padding: 11px; background: linear-gradient(135deg, var(--sunny-amber), #f39c12); color: white; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700; cursor: pointer; margin-top: 6px; }
         
-        /* 下方功能選單 */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 56px; background-color: rgba(255, 255, 255, 0.94); backdrop-filter: blur(8px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(0, 0, 0, 0.04); z-index: 100; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); text-decoration: none; font-size: 0.7rem; cursor: pointer; background: none; border: none; flex: 1; }
         .nav-item.active { color: var(--primary-ocean); font-weight: 700; }
@@ -166,37 +133,30 @@
                     <div class="cube-icon-title"><span class="cube-icon">💵</span><span class="cube-title">現金現鈔</span></div>
                     <div class="cube-footer"><span class="cube-amount" id="cube-total-cash">••••••</span><span class="cube-arrow">➔</span></div>
                 </div>
-
                 <div class="sector-cube-btn" onclick="navigateToDetail('traditional', '🏛️ 實體銀行')">
                     <div class="cube-icon-title"><span class="cube-icon">🏛️</span><span class="cube-title">實體銀行</span></div>
                     <div class="cube-footer"><span class="cube-amount" id="cube-total-traditional">••••••</span><span class="cube-arrow">➔</span></div>
                 </div>
-
                 <div class="sector-cube-btn" onclick="navigateToDetail('digital', '📱 數位銀行')">
                     <div class="cube-icon-title"><span class="cube-icon">📱</span><span class="cube-title">數位銀行</span></div>
                     <div class="cube-footer"><span class="cube-amount" id="cube-total-digital">••••••</span><span class="cube-arrow">➔</span></div>
                 </div>
-
                 <div class="sector-cube-btn" onclick="navigateToDetail('pure', '🌐 純網銀')">
                     <div class="cube-icon-title"><span class="cube-icon">🌐</span><span class="cube-title">純網銀</span></div>
                     <div class="cube-footer"><span class="cube-amount" id="cube-total-pure">••••••</span><span class="cube-arrow">➔</span></div>
                 </div>
-
                 <div class="sector-cube-btn" onclick="navigateToDetail('epay', '💳 電子支付')">
                     <div class="cube-icon-title"><span class="cube-icon">💳</span><span class="cube-title">電子支付</span></div>
                     <div class="cube-footer"><span class="cube-amount" id="cube-total-epay">••••••</span><span class="cube-arrow">➔</span></div>
                 </div>
-
                 <div class="sector-cube-btn" onclick="navigateToDetail('credit', '🌹 信用卡')">
                     <div class="cube-icon-title"><span class="cube-icon">🌹</span><span class="cube-title">信用卡</span></div>
                     <div class="cube-footer"><span class="cube-amount" id="cube-total-credit">••••••</span><span class="cube-arrow">➔</span></div>
                 </div>
-
                 <div class="sector-cube-btn" onclick="navigateToDetail('prepaid', '🎁 儲值卡')">
                     <div class="cube-icon-title"><span class="cube-icon">🎁</span><span class="cube-title">儲值卡</span></div>
                     <div class="cube-footer"><span class="cube-amount" id="cube-total-prepaid">••••••</span><span class="cube-arrow">➔</span></div>
                 </div>
-
                 <div class="sector-cube-btn" onclick="navigateToDetail('foreignCash', '✈️ 外幣現鈔')">
                     <div class="cube-icon-title"><span class="cube-icon">✈️</span><span class="cube-title">外幣現鈔</span></div>
                     <div class="cube-footer"><span class="cube-amount" id="cube-total-foreignCash">••••••</span><span class="cube-arrow">➔</span></div>
@@ -205,10 +165,7 @@
         </div>
 
         <div id="view-sector-detail" class="app-view">
-            <div class="back-bar" onclick="backToDashboard()">
-                <span>⬅</span> <span id="detail-page-title">詳細帳戶資料</span>
-            </div>
-            
+            <div class="back-bar" onclick="backToDashboard()"><span>⬅</span> <span id="detail-page-title">詳細帳戶資料</span></div>
             <div class="sub-details-grid" id="detail-cubes-root"></div>
         </div>
 
@@ -247,26 +204,63 @@
         </div>
 
         <div id="panel-stock" class="form-card">
-            <div class="form-title"><span>📈</span>投資理財賺錢錢</div>
+            <div class="form-title"><span>⛵</span>投資理財賺錢錢</div>
             <form id="stockForm">
-                <div class="form-group"><label>交易日期</label><input type="date" id="stockDate" class="form-control" required></div>
-            	<div class="form-group"><label>扣款日期</label><input type="date" id="stockPayDate" class="form-control" required></div>
                 <div class="form-row">
-                    <div class="form-group"><label>股票代號</label><input type="text" id="stockCode" class="form-control" required></div>
-                    <div class="form-group"><label>股票名稱</label><input type="text" id="stockName" class="form-control" required></div>
-                </div>
-                <div class="form-group">
-                    <label>交易類型</label>
-                    <select id="stockType" class="form-control">
-                        <option value="現股買入">現股買入</option>
-                        <option value="現股賣出">現股賣出</option>
-                    </select>
+                    <div class="form-group"><label>交易日期</label><input type="date" id="stockDate" class="form-control" required></div>
+                    <div class="form-group"><label>扣款日期</label><input type="date" id="stockPayDate" class="form-control" required></div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group"><label>股數</label><input type="number" id="stockShares" class="form-control" required></div>
-                    <div class="form-group"><label>單價</label><input type="number" id="stockPrice" class="form-control" step="0.01" required></div>
+                    <div class="form-group"><label>股票代號</label><input type="text" id="stockCode" class="form-control" placeholder="如: 1802" required></div>
+                    <div class="form-group"><label>股票名稱</label><input type="text" id="stockName" class="form-control" placeholder="如: 台玻" required></div>
                 </div>
-                <div class="form-group"><label>券商折讓</label><input type="number" id="stockDiscount" class="form-control" step="0.01" value="0.6"></div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>交易類型</label>
+                        <select id="stockType" class="form-control" onchange="calcStockValues()">
+                            <option value="現股買入">現股買入</option>
+                            <option value="現股賣出">現股賣出</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>使用券商</label>
+                        <select id="stockBroker" class="form-control" onchange="updateBrokerDiscount()">
+                            <option value="國泰證券">國泰證券 (樹精靈)</option>
+                            <option value="永豐金證券">永豐金證券</option>
+                            <option value="其它券商">其它券商</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>股數</label><input type="number" id="stockShares" class="form-control" placeholder="0" required oninput="calcStockValues()"></div>
+                    <div class="form-group"><label>單價</label><input type="number" id="stockPrice" class="form-control" step="0.01" placeholder="0.00" required oninput="calcStockValues()"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>券商折讓</label>
+                        <input type="number" id="stockDiscount" class="form-control" step="0.01" value="0.28" oninput="calcStockValues()">
+                    </div>
+                    <div class="form-group">
+                        <label>交易價款 (H欄)</label>
+                        <input type="number" id="stockTotalRaw" class="form-control" readonly style="background-color: #f1f5f9; color: #94a3b8;">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>手續費 (J欄，可手動修改)</label>
+                        <input type="number" id="stockFee" class="form-control" required oninput="manualOverrideStockNet()">
+                    </div>
+                    <div class="form-group">
+                        <label>證交稅 (K欄，可手動修改)</label>
+                        <input type="number" id="stockTax" class="form-control" required oninput="manualOverrideStockNet()">
+                    </div>
+                </div>
+                
+                <div style="background-color: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 12px; font-size: 0.75rem; color: #7f8c8d; line-height: 1.5; text-align: center;">
+                    <div style="font-weight: 700; color: var(--primary-ocean); font-size: 0.85rem;">🌊 淨收付總金額 (L欄)：NT$ <span id="lbl-net">0</span></div>
+                </div>
+
                 <button type="submit" class="btn-submit">確認此筆交易</button>
             </form>
         </div>
@@ -363,7 +357,6 @@
             
             const root = document.getElementById('detail-cubes-root');
             root.innerHTML = "";
-            
             const sourceData = globalGroupedCachedSectors[sectorKey];
 
             if (sectorKey === 'cash' || sectorKey === 'foreignCash') {
@@ -383,7 +376,6 @@
             else {
                 const groupObj = sourceData || {};
                 const keys = Object.keys(groupObj);
-                
                 if(keys.length === 0) {
                     root.innerHTML = '<p style="color:#a0aec0; font-size:0.8rem; padding:20px; text-align:center; grid-column: span 2;">無紀錄</p>';
                 } else {
@@ -394,7 +386,6 @@
                         
                         const itemWrapper = document.createElement("div");
                         itemWrapper.className = "detail-cube-item";
-                        
                         itemWrapper.innerHTML = `
                             <div class="detail-cube-header" onclick="toggleDetailDrawer(${idx})">
                                 <span class="detail-cube-title">${bankName}</span>
@@ -417,14 +408,12 @@
                                     <span class="drawer-acc-val">${isUnlocked ? sub.val : "••••••"} <small style="font-size:0.6rem; font-weight:400; color:#a0aec0;">(${sub.currency})</small></span>
                                 </li>`;
                         });
-                        
                         itemWrapper.appendChild(subUl);
                         root.appendChild(itemWrapper);
                         idx++;
                     }
                 }
             }
-            
             document.getElementById('view-sector-detail').classList.add('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -444,7 +433,15 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        document.addEventListener("DOMContentLoaded", () => { fetchAccounts(); });
+        document.addEventListener("DOMContentLoaded", () => { 
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('txDate').value = today;
+            document.getElementById('stockDate').value = today;
+            document.getElementById('stockPayDate').value = today; 
+            document.getElementById('loanDate').value = today;
+            updateBrokerDiscount(); 
+            fetchAccounts(); 
+        });
 
         function fetchAccounts() {
             const selectElements = document.querySelectorAll(".account-select");
@@ -454,7 +451,6 @@
                     if (res.status === "success") {
                         const accounts = res.data;
                         globalGroupedCachedSectors = { cash: [], traditional: {}, digital: {}, pure: {}, epay: {}, credit: {}, prepaid: {}, foreignCash: [] };
-                        
                         selectElements.forEach(select => {
                             select.innerHTML = select.id === "txAccountIn" ? '<option value="">-- 無 (非轉帳) --</option>' : '';
                         });
@@ -475,14 +471,11 @@
 
                             grandTotalTWD += balanceNum; 
                             if (sectorTotals.hasOwnProperty(sheetType)) { sectorTotals[sheetType] += balanceNum; }
-
                             const accPack = { name: acc.name, formattedBalance: formattedVal, currency: acc.currency };
                             
-                            if (sheetType === "現金現鈔") {
-                                globalGroupedCachedSectors.cash.push(accPack);
-                            } else if (sheetType === "外幣現鈔") {
-                                globalGroupedCachedSectors.foreignCash.push(accPack);
-                            } else {
+                            if (sheetType === "現金現鈔") globalGroupedCachedSectors.cash.push(accPack);
+                            else if (sheetType === "外幣現鈔") globalGroupedCachedSectors.foreignCash.push(accPack);
+                            else {
                                 let cacheTargetObj = globalGroupedCachedSectors.traditional;
                                 if (sheetType === "數位銀行") cacheTargetObj = globalGroupedCachedSectors.digital;
                                 else if (sheetType === "純網銀") cacheTargetObj = globalGroupedCachedSectors.pure;
@@ -490,14 +483,11 @@
                                 else if (sheetType === "信用卡") cacheTargetObj = globalGroupedCachedSectors.credit;
                                 else if (sheetType === "儲值卡") cacheTargetObj = globalGroupedCachedSectors.prepaid;
 
-                                if (!cacheTargetObj[excelBankName]) {
-                                    cacheTargetObj[excelBankName] = { bankTotal: 0, subAccounts: [] };
-                                }
+                                if (!cacheTargetObj[excelBankName]) cacheTargetObj[excelBankName] = { bankTotal: 0, subAccounts: [] };
                                 cacheTargetObj[excelBankName].bankTotal += balanceNum;
                                 cacheTargetObj[excelBankName].subAccounts.push({ name: acc.name, val: formattedVal, currency: acc.currency });
                             }
                         });
-
                         globalRawData.grandTotal = grandTotalTWD;
                         globalRawData.sectorTotals = sectorTotals;
                         renderAllAmounts();
@@ -511,13 +501,19 @@
                 e.preventDefault();
                 const submitBtn = this.querySelector(".btn-submit");
                 const originalText = submitBtn.textContent;
-                submitBtn.textContent = "再花錢剁手手... ⛵"; submitBtn.disabled = true;
+                submitBtn.textContent = "資料拋向浪潮中... ⛵"; submitBtn.disabled = true;
                 const payload = { action: actionType, data: getFormDataFunc() };
                 fetch(GAS_API_URL, { method: "POST", body: JSON.stringify(payload) })
                 .then(response => response.json())
                 .then(res => {
                     if (res.status === "success") {
                         alert("✨ 紀錄成功！資料已穩穩寫入您的雲端試算表。"); this.reset();
+                        const d = new Date().toISOString().split('T')[0];
+                        document.getElementById('txDate').value = d;
+                        document.getElementById('stockDate').value = d;
+                        document.getElementById('stockPayDate').value = d;
+                        document.getElementById('loanDate').value = d;
+                        updateBrokerDiscount();
                         fetchAccounts(); switchNav('dashboard', document.querySelectorAll('.nav-item')[0]);
                     } else { alert("❌ 寫入失敗: " + res.message); }
                 })
@@ -535,13 +531,70 @@
                 project: "", note: document.getElementById("txNote").value
             };
         });
+
+        function updateBrokerDiscount() {
+            const broker = document.getElementById("stockBroker").value;
+            const discountInput = document.getElementById("stockDiscount");
+            if (broker === "國泰證券") discountInput.value = "0.28";
+            else if (broker === "永豐金證券") discountInput.value = "0.60";
+            calcStockValues();
+        }
+
+        // 💡 智慧計算核心：預設全套手續費與證交稅公式
+        function calcStockValues() {
+            const shares = Number(document.getElementById("stockShares").value) || 0;
+            const price = Number(document.getElementById("stockPrice").value) || 0;
+            const discount = Number(document.getElementById("stockDiscount").value) || 1;
+            const type = document.getElementById("stockType").value;
+
+            const totalRaw = Math.round(shares * price);
+            document.getElementById("stockTotalRaw").value = totalRaw;
+            
+            let fee = Math.round(totalRaw * 0.001425 * discount);
+            if (totalRaw > 0 && fee < 20) fee = 20; 
+            document.getElementById("stockFee").value = fee;
+
+            const tax = (type === "現股賣出") ? Math.round(totalRaw * 0.003) : 0;
+            document.getElementById("stockTax").value = tax;
+
+            manualOverrideStockNet(); // 計算最終總計
+        }
+
+        // 💡 允許覆蓋核心：當手動去修改手續費、證交稅格子時，即時更新最終淨收付金額
+        function manualOverrideStockNet() {
+            const totalRaw = Number(document.getElementById("stockTotalRaw").value) || 0;
+            const fee = Number(document.getElementById("stockFee").value) || 0;
+            const tax = Number(document.getElementById("stockTax").value) || 0;
+            const type = document.getElementById("stockType").value;
+
+            const netAmount = (type === "現股買入") ? (totalRaw + fee) : (totalRaw - fee - tax);
+            document.getElementById("lbl-net").textContent = netAmount.toLocaleString('zh-TW');
+        }
+
         handleFormSubmit("stockForm", "addStock", () => {
+            const totalRaw = Number(document.getElementById("stockTotalRaw").value) || 0;
+            const fee = Number(document.getElementById("stockFee").value) || 0;
+            const tax = Number(document.getElementById("stockTax").value) || 0;
+            const type = document.getElementById("stockType").value;
+            const netAmount = (type === "現股買入") ? (totalRaw + fee) : (totalRaw - fee - tax);
+
             return {
-                date: document.getElementById("stockDate").value, stockCode: document.getElementById("stockCode").value,
-                stockName: document.getElementById("stockName").value, type: document.getElementById("stockType").value,
-                shares: Number(document.getElementById("stockShares").value), price: Number(document.getElementById("stockPrice").value), discount: Number(document.getElementById("stockDiscount").value)
+                date: document.getElementById("stockDate").value,
+                payDate: document.getElementById("stockPayDate").value,
+                stockCode: document.getElementById("stockCode").value,
+                stockName: document.getElementById("stockName").value,
+                type: type,
+                shares: Number(document.getElementById("stockShares").value),
+                price: Number(document.getElementById("stockPrice").value),
+                discount: Number(document.getElementById("stockDiscount").value),
+                totalRaw: totalRaw,
+                fee: fee,
+                tax: tax,
+                netAmount: netAmount,
+                broker: document.getElementById("stockBroker").value
             };
         });
+
         handleFormSubmit("loanForm", "addLoan", () => {
             return {
                 date: document.getElementById("loanDate").value, type: document.getElementById("loanType").value,
