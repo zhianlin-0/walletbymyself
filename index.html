@@ -11,6 +11,8 @@
     <link rel="apple-touch-icon" href="https://img.icons8.com/papercut/180/000000/sparkling-diamond.png?v=3">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-ocean: #1a5f7a;
@@ -26,7 +28,7 @@
             box-sizing: border-box; 
             margin: 0; 
             padding: 0; 
-            font-family: "HanziPen TC", "翩翩體-繁", "Liu Jian Mao Cao", "Caveat", "Chalkboard SE", 'Noto Sans TC', sans-serif;
+            font-family: "HanziPen TC", "翩翩體-繁", "Songti TC", "BiauKai", "Caveat", "Chalkboard SE", 'Noto Sans TC', sans-serif;
             -webkit-tap-highlight-color: transparent; 
         }
         
@@ -42,7 +44,7 @@
             display: flex; flex-direction: column; align-items: center; text-align: center;
         }
         .balance-card h3 { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; margin-bottom: 6px; letter-spacing: 0.5px; }
-        .main-total-display { font-size: 1.55rem; font-weight: 700; color: var(--primary-ocean); margin-top: 2px; }
+        .main-total-display { font-size: 1.55rem; font-weight: 700; color: var(--primary-ocean); margin-top: 2px; letter-spacing: 0.5px; }
 
         .privacy-toggle-btn {
             background: #f1f5f9; color: var(--primary-ocean); border: 1px solid #e2e8f0;
@@ -65,7 +67,7 @@
         .cube-icon { font-size: 1.15rem; }
         .cube-title { font-size: 0.82rem; font-weight: 700; color: var(--text-dark); }
         .cube-footer { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
-        .cube-amount { font-size: 0.95rem; font-weight: 700; color: var(--primary-ocean); }
+        .cube-amount { font-size: 0.95rem; font-weight: 700; color: var(--primary-ocean); letter-spacing: 0.5px; }
         .cube-arrow { font-size: 0.65rem; color: var(--text-muted); }
 
         .back-bar {
@@ -176,28 +178,57 @@
                 <div class="form-group">
                     <label>交易類型</label>
                     <select id="txType" class="form-control">
-                        <option value="支出">支出 (Outflow)</option>
-                        <option value="收入">收入 (Inflow)</option>
-                        <option value="轉帳">轉帳 (Transfer)</option>
+                        <option value="支出">支出</option>
+                        <option value="收入">收入</option>
+                        <option value="轉帳">轉帳</option>
                     </select>
                 </div>
                 <div class="form-group"><label>扣款帳戶 (出)</label><select id="txAccountOut" class="form-control account-select"></select></div>
                 <div class="form-group"><label>存入帳戶 (入)</label><select id="txAccountIn" class="form-control account-select"><option value="">-- 無 --</option></select></div>
                 <div class="form-row">
-                    <div class="form-group"><label>金額</label><input type="number" id="txAmount" class="form-control" placeholder="0" required min="0"></div>
+                    <div class="form-group"><label>原始金額</label><input type="number" id="txAmount" class="form-control" placeholder="0" required min="0"></div>
                     <div class="form-group">
                         <label>幣別</label>
                         <select id="txCurrency" class="form-control">
-                            <option value="TWD">TWD (台幣)</option>
-                            <option value="USD">USD (美金)</option>
-                            <option value="JPY">JPY (日幣)</option>
+                            <option value="TWD">TWD</option>
+                            <option value="USD">USD</option>
+                            <option value="JPY">JPY</option>
                         </select>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group"><label>主分類</label><input type="text" id="txMainCat" class="form-control" placeholder="如: 餐飲"></div>
-                    <div class="form-group"><label>子分類</label><input type="text" id="txSubCat" class="form-control" placeholder="如: 浪板租借"></div>
+                
+                <div class="form-group">
+                    <label>主類別 (大場景)</label>
+                    <select id="txMainCat" class="form-control">
+                        <option value="生活開銷">生活開銷</option>
+                        <option value="旅遊度假">旅遊度假</option>
+                        <option value="工作商務">工作商務</option>
+                        <option value="投資理財">投資理財</option>
+                        <option value="其他">其他</option>
+                    </select>
                 </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>子類別 (剛需項目)</label>
+                        <select id="txSubCat" class="form-control" onchange="updateDetailOptions()">
+                            <option value="食">🍕 食</option>
+                            <option value="衣">🛍️ 衣</option>
+                            <option value="住">🏠 住</option>
+                            <option value="行">🚗 行</option>
+                            <option value="育">📚 育</option>
+                            <option value="樂">🎡 樂</option>
+                            <option value="其他">✨ 其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>細項 (自動連動項目)</label>
+                        <select id="txDetailCat" class="form-control">
+                            </select>
+                    </div>
+                </div>
+                
+                <div class="form-group"><label>專案 / 對象 (對應K欄)</label><input type="text" id="txProject" class="form-control" placeholder="如: 日常生活、越南旅遊、代墊款"></div>
                 <div class="form-group"><label>備註</label><input type="text" id="txNote" class="form-control" placeholder="碎念..."></div>
                 <button type="submit" class="btn-submit">每筆花費都很重要！</button>
             </form>
@@ -245,7 +276,6 @@
                         <input type="number" id="stockTotalRaw" class="form-control" readonly style="background-color: #f1f5f9; color: #94a3b8;">
                     </div>
                 </div>
-
                 <div class="form-row">
                     <div class="form-group">
                         <label>手續費 (J欄，可手動修改)</label>
@@ -256,11 +286,9 @@
                         <input type="number" id="stockTax" class="form-control" required oninput="manualOverrideStockNet()">
                     </div>
                 </div>
-                
                 <div style="background-color: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 12px; font-size: 0.75rem; color: #7f8c8d; line-height: 1.5; text-align: center;">
                     <div style="font-weight: 700; color: var(--primary-ocean); font-size: 0.85rem;">🌊 淨收付總金額 (L欄)：NT$ <span id="lbl-net">0</span></div>
                 </div>
-
                 <button type="submit" class="btn-submit">確認此筆交易</button>
             </form>
         </div>
@@ -301,6 +329,31 @@
         let globalGroupedCachedSectors = {
             cash: [], traditional: {}, digital: {}, pure: {}, epay: {}, credit: {}, prepaid: {}, foreignCash: []
         };
+
+        // 🧠 定義子類別與細項的動態對應表
+        const detailMapping = {
+            "食": ["早餐", "午餐", "晚餐", "飲料點心", "食材超市", "其他大餐"],
+            "衣": ["服飾治裝", "鞋包配件", "隱形眼鏡/美妝", "洗衣服/保養"],
+            "住": ["房租", "管理費", "水電瓦斯", "家居生活用品"],
+            "行": ["機票", "火車/高鐵票", "計程車/Uber", "捷運/公車", "加油/不扣款車資"],
+            "育": ["線上課程", "書籍買書", "展覽講座", "證照考試"],
+            "樂": ["旅遊行程/門票", "潛水/水上活動", "電影娛樂", "唱歌聚會"],
+            "其他": ["日常雜項", "禮物紅包", "醫療藥品"]
+        };
+
+        function updateDetailOptions() {
+            const subCatVal = document.getElementById("txSubCat").value;
+            const detailSelect = document.getElementById("txDetailCat");
+            detailSelect.innerHTML = "";
+            
+            const options = detailMapping[subCatVal] || ["一般細項"];
+            options.forEach(opt => {
+                const o = document.createElement("option");
+                o.value = opt;
+                o.textContent = opt;
+                detailSelect.appendChild(o);
+            });
+        }
 
         function togglePrivacy() {
             if (!isUnlocked) {
@@ -439,6 +492,7 @@
             document.getElementById('stockDate').value = today;
             document.getElementById('stockPayDate').value = today; 
             document.getElementById('loanDate').value = today;
+            updateDetailOptions(); // 初始化細項選單
             updateBrokerDiscount(); 
             fetchAccounts(); 
         });
@@ -501,21 +555,22 @@
                 e.preventDefault();
                 const submitBtn = this.querySelector(".btn-submit");
                 const originalText = submitBtn.textContent;
-                submitBtn.textContent = "認真記帳乖👶🏻... 🫶🏻"; submitBtn.disabled = true;
+                submitBtn.textContent = "認真記帳乖寶寶👶🏻... "; submitBtn.disabled = true;
                 const payload = { action: actionType, data: getFormDataFunc() };
                 fetch(GAS_API_URL, { method: "POST", body: JSON.stringify(payload) })
                 .then(response => response.json())
                 .then(res => {
                     if (res.status === "success") {
-                        alert("✨ 紀錄成功！棒棒👍🏻。"); this.reset();
+                        alert("✨ 紀錄成功！棒棒👍🏻"); this.reset();
                         const d = new Date().toISOString().split('T')[0];
                         document.getElementById('txDate').value = d;
                         document.getElementById('stockDate').value = d;
-                        document.getElementById('stockPayDate').value = d;
+                        document.getElementById('stockPayDate').value = d;🫶🏻
                         document.getElementById('loanDate').value = d;
+                        updateDetailOptions();
                         updateBrokerDiscount();
                         fetchAccounts(); switchNav('dashboard', document.querySelectorAll('.nav-item')[0]);
-                    } else { alert("❌ 失敗: " + res.message); }
+                    } else { alert("❌ 寫入失敗: " + res.message); }
                 })
                 .catch(err => { alert("❌ 網路發生錯誤。"); })
                 .finally(() => { submitBtn.textContent = originalText; submitBtn.disabled = false; });
@@ -523,12 +578,22 @@
         }
 
         handleFormSubmit("txForm", "addTransaction", () => {
+            const subCat = document.getElementById("txSubCat").value;
+            const detailCat = document.getElementById("txDetailCat").value;
+            // 💡 方案 A：自動將「子類別」與「細項」組合成「子類別-細項」寫入 Excel 欄位
+            const combinedSubCategory = `${subCat}-${detailCat}`;
+
             return {
-                date: document.getElementById("txDate").value, type: document.getElementById("txType").value,
-                accountOut: document.getElementById("txAccountOut").value, accountIn: document.getElementById("txAccountIn").value,
-                amount: Number(document.getElementById("txAmount").value), currency: document.getElementById("txCurrency").value,
-                mainCategory: document.getElementById("txMainCat").value, subCategory: document.getElementById("txSubCat").value,
-                project: "", note: document.getElementById("txNote").value
+                date: document.getElementById("txDate").value,
+                type: document.getElementById("txType").value,
+                accountOut: document.getElementById("txAccountOut").value,
+                accountIn: document.getElementById("txAccountIn").value,
+                amount: Number(document.getElementById("txAmount").value),
+                currency: document.getElementById("txCurrency").value,
+                mainCategory: document.getElementById("txMainCat").value,
+                subCategory: combinedSubCategory, // 送出組合後的結果
+                project: document.getElementById("txProject").value, 
+                note: document.getElementById("txNote").value
             };
         });
 
@@ -540,7 +605,6 @@
             calcStockValues();
         }
 
-        // 💡 智慧計算核心：預設全套手續費與證交稅公式
         function calcStockValues() {
             const shares = Number(document.getElementById("stockShares").value) || 0;
             const price = Number(document.getElementById("stockPrice").value) || 0;
@@ -557,10 +621,9 @@
             const tax = (type === "現股賣出") ? Math.round(totalRaw * 0.003) : 0;
             document.getElementById("stockTax").value = tax;
 
-            manualOverrideStockNet(); // 計算最終總計
+            manualOverrideStockNet();
         }
 
-        // 💡 允許覆蓋核心：當手動去修改手續費、證交稅格子時，即時更新最終淨收付金額
         function manualOverrideStockNet() {
             const totalRaw = Number(document.getElementById("stockTotalRaw").value) || 0;
             const fee = Number(document.getElementById("stockFee").value) || 0;
