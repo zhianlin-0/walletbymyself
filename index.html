@@ -7,7 +7,6 @@
     <title>Zhian's 💰</title>
     
     <meta property="og:title" content="Zhian's 🫧 ⭐️ 🪞">
-    
     <meta property="og:description" content="認真賺錢，謹慎花錢，多多存錢，快樂玩耍！☀️∞">
     
     <link rel="apple-touch-icon" href="https://img.icons8.com/papercut/180/000000/sparkling-diamond.png?v=3">
@@ -26,7 +25,6 @@
             --text-muted: #7f8c8d;
         }
         
-        /* 核心：精準指定蘋果內建的翩翩體官方名稱 "HanziPen TC" */
         * { 
             box-sizing: border-box; 
             margin: 0; 
@@ -41,7 +39,6 @@
         header p { font-size: 0.78rem; font-weight: 300; opacity: 0.85; letter-spacing: 0.5px; }
         .container { max-width: 600px; margin: 0 auto; padding: 12px 14px; }
         
-        /* 總資產面板 */
         .balance-card { 
             background: var(--foam-white); border-radius: 14px; padding: 12px 15px; margin-bottom: 16px; 
             box-shadow: 0 4px 15px var(--sea-shadow); border: 1px solid rgba(26, 95, 122, 0.04);
@@ -245,8 +242,16 @@
                     <div class="form-group"><label>扣款日期</label><input type="date" id="stockPayDate" class="form-control" required></div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group"><label>股票代號</label><input type="text" id="stockCode" class="form-control" placeholder="如: 1802" required></div>
-                    <div class="form-group"><label>股票名稱 <small style="color:#b2bec3;">(可在Excel用公式自動帶出)</small></label><input type="text" id="stockName" class="form-control" placeholder="如: 台玻" required></div>
+                    <div class="form-group">
+                        <label>股票代號</label>
+                        <input type="text" id="stockCode" class="form-control" placeholder="如: 2330" required list="stockCodeList" oninput="onStockCodeChange()">
+                        <datalist id="stockCodeList"></datalist>
+                    </div>
+                    <div class="form-group">
+                        <label>股票名稱</label>
+                        <input type="text" id="stockName" class="form-control" placeholder="如: 台積電" required list="stockNameList" oninput="onStockNameChange()">
+                        <datalist id="stockNameList"></datalist>
+                    </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
@@ -346,6 +351,75 @@
             cash: [], traditional: {}, digital: {}, pure: {}, epay: {}, credit: {}, prepaid: {}, foreignCash: []
         };
 
+        // 💡 內建台股核心熱門權值股、金控、熱門 ETF 代碼與名稱數據庫
+        const STOCK_DATABASE = {
+            // 熱門權值與電子
+            "2330": "台積電", "2317": "鴻海", "2454": "聯發科", "2308": "台達電", "2382": "廣達",
+            "2303": "聯電", "2357": "華碩", "2324": "仁寶", "2353": "宏碁", "3231": "緯創",
+            "23Automated": "南XX", "8150": "南茂", "1802": "台玻", "2409": "友達", "3481": "群創",
+            // 金融股
+            "2881": "富邦金", "2882": "國泰金", "2891": "中信金", "2886": "兆豐金", "2884": "玉山金",
+            "2892": "第一金", "2880": "華南金", "2885": "元大金", "2883": "開發金", "2887": "台新金",
+            "2890": "永豐金", "2888": "新光金", "5880": "合庫金", "2867": "三商壽",
+            // 熱門高股息與市值型 ETF
+            "0050": "元大台灣50", "0056": "元大高股息", "00878": "國泰永續高股息", "00922": "國泰台灣領袖50",
+            "00919": "群益台灣精選高息", "00929": "復華台灣科技優息", "00713": "元大台灣高息低波",
+            "006208": "富邦台50", "00881": "國泰台灣科技龍頭", "00891": "中信關鍵半導體", 
+            "00896": "中信綠能及電動車", "00939": "統一台灣高息動能", "00940": "元大台灣價值高息",
+            // 傳統與傳產
+            "1101": "台泥", "1301": "台塑", "2002": "中鋼", "2603": "長榮", "2609": "陽明", "2615": "萬海"
+        };
+
+        // 反向資料庫（用於名稱查代號）
+        const STOCK_NAME_LOOKUP = {};
+        Object.keys(STOCK_DATABASE).forEach(code => {
+            STOCK_NAME_LOOKUP[STOCK_DATABASE[code]] = code;
+        });
+
+        // 💡 初始化股票智慧下拉選單提示
+        function initStockDataLists() {
+            const codeList = document.getElementById("stockCodeList");
+            const nameList = document.getElementById("stockNameList");
+            if (!codeList || !nameList) return;
+
+            codeList.innerHTML = "";
+            nameList.innerHTML = "";
+
+            Object.keys(STOCK_DATABASE).forEach(code => {
+                const name = STOCK_DATABASE[code];
+                
+                // 代號下拉項目
+                const optCode = document.createElement("option");
+                optCode.value = code;
+                optCode.textContent = name;
+                codeList.appendChild(optCode);
+
+                // 名称下拉項目
+                const optName = document.createElement("option");
+                optName.value = name;
+                optName.textContent = code;
+                nameList.appendChild(optName);
+            });
+        }
+
+        // 💡 當股票代號欄位輸入時觸發
+        function onStockCodeChange() {
+            const codeInput = document.getElementById("stockCode").value.trim();
+            const nameInput = document.getElementById("stockName");
+            if (STOCK_DATABASE[codeInput]) {
+                nameInput.value = STOCK_DATABASE[codeInput]; // 自動帶出名稱
+            }
+        }
+
+        // 💡 當股票名稱欄位輸入時觸發
+        function onStockNameChange() {
+            const nameInput = document.getElementById("stockName").value.trim();
+            const codeInput = document.getElementById("stockCode");
+            if (STOCK_NAME_LOOKUP[nameInput]) {
+                codeInput.value = STOCK_NAME_LOOKUP[nameInput]; // 自動帶出代號
+            }
+        }
+
         const detailMapping = {
             "食": ["早餐", "午餐", "晚餐", "飲料點心", "食材超市", "其他大餐"],
             "衣": ["服飾治裝", "鞋包配件", "隱形眼鏡/美妝", "洗衣服/保養"],
@@ -371,13 +445,12 @@
             });
         }
 
-        // 💡 智慧型借貸水庫標籤動態變換
         function updateLoanAccountLabel() {
             const type = document.getElementById("loanType").value;
             const lbl = document.getElementById("lbl-loan-account");
             
             if (type === "代墊/借出") {
-                lbl.textContent = "💸 支付/借出帳戶 (你用什麼幫他墊錢，如：國泰信用卡)";
+                lbl.textContent = "💸 支付/借出帳戶 (你用什麼幫他墊錢，如：富邦信用卡)";
             } else if (type === "收到還款") {
                 lbl.textContent = "💰 存入/收款帳戶 (他還你錢要存去哪，如：LINE Pay Money)";
             } else if (type === "借入款項") {
@@ -526,6 +599,7 @@
             document.getElementById('loanDate').value = today;
             updateDetailOptions();
             updateBrokerDiscount(); 
+            initStockDataLists(); // 💡 額外加裝：啟動股票下拉資料庫
             fetchAccounts(); 
             setupFormSubmissions();
         });
@@ -584,7 +658,6 @@
         }
 
         function setupFormSubmissions() {
-            // 表單一：日常記帳
             document.getElementById("txForm").addEventListener("submit", function(e) {
                 e.preventDefault();
                 const submitBtn = this.querySelector(".btn-submit");
@@ -612,7 +685,6 @@
                 sendData(payload, this, originalText, submitBtn);
             });
 
-            // 表單二：股票交易
             document.getElementById("stockForm").addEventListener("submit", function(e) {
                 e.preventDefault();
                 const submitBtn = this.querySelector(".btn-submit");
@@ -646,7 +718,6 @@
                 sendData(payload, this, originalText, submitBtn);
             });
 
-            // 表單三：借貸追蹤
             document.getElementById("loanForm").addEventListener("submit", function(e) {
                 e.preventDefault();
                 const submitBtn = this.querySelector(".btn-submit");
@@ -682,7 +753,7 @@
                     document.getElementById('loanDate').value = d;
                     updateDetailOptions();
                     updateBrokerDiscount();
-                    updateLoanAccountLabel(); // 重設借貸水庫標籤
+                    updateLoanAccountLabel(); 
                     fetchAccounts(); 
                     switchNav('dashboard', document.querySelectorAll('.nav-item')[0]);
                 } else { alert("❌ 寫入失敗: " + res.message); }
